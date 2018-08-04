@@ -15,11 +15,7 @@ object UserManager {
     private var listeners = listOf<ListenerWrapper>()
 
     fun getUser(context: Context): User? {
-        return getUser(
-            getPreferences(
-                context
-            )
-        )
+        return getUser(getPreferences(context))
     }
 
     fun setUser(context: Context, user: User?) {
@@ -39,8 +35,7 @@ object UserManager {
     }
 
     fun registerUserChangeListener(context: Context, listener: (User?) -> Unit) {
-        val listenerWrapper = ListenerWrapper(listener)
-            .also { listeners = listeners.plus(it) }
+        val listenerWrapper = ListenerWrapper(listener).also { listeners = listeners.plus(it) }
 
         getPreferences(context).registerOnSharedPreferenceChangeListener(listenerWrapper)
     }

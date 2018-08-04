@@ -83,7 +83,7 @@ class FindMatchActivity : BaseActivity() {
 
         nearbyManager.searchingFoundListener = null
         nearbyManager.searchingLostListener = null
-        nearbyManager.expiredListener = null
+        nearbyManager.errorListener = null
 
         super.onStop()
     }
@@ -103,7 +103,11 @@ class FindMatchActivity : BaseActivity() {
     private fun setupNearby() {
         val safeUser = user ?: throw IllegalStateException("The user should not be null on this screen")
 
-        nearbyManager.expiredListener = { finish() }
+        nearbyManager.errorListener = {
+            // TODO: Handle error
+
+            finish()
+        }
 
         nearbyManager.searchingFoundListener = { foundMessage ->
             players = players.plus(foundMessage.toPlayer())

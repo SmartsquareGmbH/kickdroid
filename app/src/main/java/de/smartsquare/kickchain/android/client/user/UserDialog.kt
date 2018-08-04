@@ -23,11 +23,7 @@ class UserDialog : DialogFragment() {
         private const val TAG = "user_dialog"
 
         fun show(activity: FragmentActivity) {
-            UserDialog()
-                .show(
-                    activity.supportFragmentManager,
-                    TAG
-                )
+            UserDialog().show(activity.supportFragmentManager, TAG)
         }
     }
 
@@ -56,10 +52,7 @@ class UserDialog : DialogFragment() {
                 } else {
                     val id = UUID.randomUUID().toString()
 
-                    UserManager.setUser(
-                        requireContext(),
-                        user?.copy(name = name) ?: User(id, name)
-                    )
+                    UserManager.setUser(requireContext(), user?.copy(name = name) ?: User(id, name))
 
                     dismiss()
                 }
