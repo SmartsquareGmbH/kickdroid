@@ -1,5 +1,9 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     ext {
+        gradleVersion = "4.9"
+
         kotlinVersion = "1.2.60"
         androidXVersion = "1.0.0-beta01"
         playServicesVersion = "15.0.1"
@@ -38,9 +42,13 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    tasks.withType(KotlinCompile).all {
         kotlinOptions {
             freeCompilerArgs = ["-Xjsr305=strict"]
         }
     }
+}
+
+wrapper {
+    setGradleVersion(project.ext.gradleVersion)
 }
