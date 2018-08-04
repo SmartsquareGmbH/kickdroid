@@ -1,0 +1,46 @@
+buildscript {
+    ext {
+        kotlinVersion = "1.2.60"
+        androidXVersion = "1.0.0-beta01"
+        playServicesVersion = "15.0.1"
+
+        androidGradlePluginVersion = "3.3.0-alpha04"
+        gradleVersionsPluginVersion = "0.20.0"
+
+        kotterknifeVersion = "a7cedb3438"
+        moshiVersion = "1.6.0"
+        iconicsVersion = "3.0.4"
+        communityMaterialTypefaceVersion = "2.0.46.1"
+
+        leakCanaryVersion = "1.6.1"
+    }
+
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+
+        classpath "com.github.ben-manes:gradle-versions-plugin:$gradleVersionsPluginVersion"
+    }
+}
+
+apply plugin: "com.github.ben-manes.versions"
+apply plugin: "base"
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            freeCompilerArgs = ["-Xjsr305=strict"]
+        }
+    }
+}

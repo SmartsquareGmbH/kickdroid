@@ -1,0 +1,108 @@
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-kapt"
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "de.smartsquare.kickchain.android.client"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0.0"
+
+        resConfigs "en", "de"
+    }
+
+    signingConfigs {
+        if (shouldSign()) {
+            release {
+                storeFile file(getFromSecrets('RELEASE_STORE_FILE'))
+                storePassword getFromSecrets('RELEASE_STORE_PASSWORD')
+                keyAlias getFromSecrets('RELEASE_KEY_ALIAS')
+                keyPassword getFromSecrets('RELEASE_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        boolean shouldSign = shouldSign()
+
+        if (!shouldSign) {
+            logger.warn('This build will not be signed because it is missing the keystore info. Please add ' +
+                    'values for "RELEASE_STORE_FILE", "RELEASE_STORE_PASSWORD", "RELEASE_KEY_ALIAS" and ' +
+                    '"RELEASE_KEY_PASSWORD" to your secrets.properties file if you want the apk to be signed.')
+        }
+
+        release {
+            postprocessing {
+                removeUnusedCode true
+                removeUnusedResources true
+                obfuscate true
+                optimizeCode true
+                proguardFiles "proguard-rules.pro"
+            }
+
+            if (shouldSign) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    lintOptions {
+        warningsAsErrors = true
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+
+    implementation "androidx.appcompat:appcompat:$androidXVersion"
+    implementation "androidx.cardview:cardview:$androidXVersion"
+    implementation "androidx.recyclerview:recyclerview:$androidXVersion"
+
+    implementation "com.google.android.material:material:$androidXVersion"
+    implementation "com.google.android.gms:play-services-nearby:$playServicesVersion"
+
+    implementation "com.squareup.moshi:moshi:$moshiVersion"
+    implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
+    implementation "com.mikepenz:iconics-core:$iconicsVersion@aar"
+    implementation "com.mikepenz:iconics-views:$iconicsVersion@aar"
+    implementation "com.mikepenz:community-material-typeface:$communityMaterialTypefaceVersion@aar"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
+}
+
+static String getFromSecrets(String key) {
+    Properties result = new Properties()
+
+    try {
+        result.load(new FileInputStream(new File('secrets.properties')))
+    } catch (Exception ignored) {
+        throw new GradleException("Please add a secrets.properties file with a value for $key to perform this action.")
+    }
+
+    if (!result.containsKey(key)) {
+        throw new GradleException("Please include a value for $key in your secrets.properties " +
+                "file to perform this action.")
+    }
+
+    return result[key]
+}
+
+static boolean shouldSign() {
+    Properties result = new Properties()
+
+    try {
+        result.load(new FileInputStream(new File('secrets.properties')))
+    } catch (Exception ignored) {
+        return false
+    }
+
+    return result.containsKey('RELEASE_STORE_FILE') && result.containsKey('RELEASE_STORE_PASSWORD') &&
+            result.containsKey('RELEASE_KEY_ALIAS') && result.containsKey('RELEASE_KEY_PASSWORD')
+}
