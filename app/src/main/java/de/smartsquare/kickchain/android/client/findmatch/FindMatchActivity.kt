@@ -6,11 +6,13 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.material.snackbar.Snackbar
 import de.smartsquare.kickchain.android.client.BaseActivity
 import de.smartsquare.kickchain.android.client.R
 import de.smartsquare.kickchain.android.client.nearby.NearbyManager
@@ -47,10 +49,13 @@ class FindMatchActivity : BaseActivity() {
     private val teamMateAdapter get() = teamMateList.adapter as PlayerAdapter
     private val opponentAdapter get() = opponentList.adapter as PlayerAdapter
 
+    private val root by bindView<View>(android.R.id.content)
+
     private val searchingIndicator by bindView<View>(R.id.searchingIndicator)
     private val playerContainer by bindView<ViewGroup>(R.id.playerContainer)
     private val teamMateList by bindView<RecyclerView>(R.id.teamMateList)
     private val opponentList by bindView<RecyclerView>(R.id.opponentList)
+    private val startMatchButton by bindView<Button>(R.id.startMatchButton)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +64,7 @@ class FindMatchActivity : BaseActivity() {
 
         setupToolbar()
         setupLists()
+        setupStartMatchButton()
         animateSearchingIndicator()
     }
 
@@ -131,6 +137,9 @@ class FindMatchActivity : BaseActivity() {
         teamMateList.adapter = PlayerAdapter()
         opponentList.adapter = PlayerAdapter()
 
+        teamMateList.isNestedScrollingEnabled = false
+        opponentList.isNestedScrollingEnabled = false
+
         teamMateAdapter.playerSelectedCallback = { player ->
             players = players.map {
                 when (it.name == player.name) {
@@ -172,6 +181,28 @@ class FindMatchActivity : BaseActivity() {
 
             teamMateAdapter.replaceData(players.filter { !it.isOpponent })
             opponentAdapter.replaceData(players.filter { !it.isTeamMate })
+        }
+
+        updateStartMatchButton()
+    }
+
+    private fun setupStartMatchButton() {
+        startMatchButton.setOnClickListener {
+            if (players.any { it.isOpponent }) {
+                // TODO
+            } else {
+                Snackbar.make(root, R.string.find_match_select_opponent, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        updateStartMatchButton()
+    }
+
+    private fun updateStartMatchButton() {
+        if (players.any { it.isOpponent }) {
+            startMatchButton.text = getString(R.string.find_match_start)
+        } else {
+            startMatchButton.text = getString(R.string.find_match_start_missing_opponent)
         }
     }
 

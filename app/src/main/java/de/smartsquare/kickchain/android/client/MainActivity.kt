@@ -66,9 +66,9 @@ class MainActivity : BaseActivity() {
                 ?: NearbyException(NearbyException.NearbyExceptionType.UNKNOWN)
 
             val message = when (error.type) {
-                NearbyException.NearbyExceptionType.PERMISSION -> "Bitte gewähre die nötigen Berechtigungen"
-                NearbyException.NearbyExceptionType.API -> "Es gab ein Problem mit der Verbindung. Überprüfe ob du Internetzugriff hast"
-                NearbyException.NearbyExceptionType.UNKNOWN -> "Ein unbekannter Fehler ist aufgetreten"
+                NearbyException.NearbyExceptionType.PERMISSION -> getString(R.string.error_permission)
+                NearbyException.NearbyExceptionType.API -> getString(R.string.error_api)
+                NearbyException.NearbyExceptionType.UNKNOWN -> getString(R.string.error_unknown)
                 NearbyException.NearbyExceptionType.EXPIRED -> null
             }
 
