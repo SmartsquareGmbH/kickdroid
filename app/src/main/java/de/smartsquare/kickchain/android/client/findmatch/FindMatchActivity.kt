@@ -1,6 +1,6 @@
 package de.smartsquare.kickchain.android.client.findmatch
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
@@ -30,8 +30,8 @@ class FindMatchActivity : BaseActivity() {
         private const val LOADING_INDICATOR_ROTATION = 720f
         private const val GOOGLE_API_ERROR_REQUEST = 42343
 
-        fun navigateTo(context: Context) {
-            context.startActivity(Intent(context, FindMatchActivity::class.java))
+        fun navigateToForResult(activity: Activity, requestCode: Int) {
+            activity.startActivityForResult(Intent(activity, FindMatchActivity::class.java), requestCode)
         }
     }
 
@@ -104,7 +104,7 @@ class FindMatchActivity : BaseActivity() {
         val safeUser = user ?: throw IllegalStateException("The user should not be null on this screen")
 
         nearbyManager.errorListener = {
-            // TODO: Handle error
+            setResult(RESULT_OK, Intent().putExtra("error", it))
 
             finish()
         }

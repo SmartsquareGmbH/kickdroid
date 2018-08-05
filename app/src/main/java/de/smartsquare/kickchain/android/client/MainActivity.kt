@@ -1,10 +1,15 @@
 package de.smartsquare.kickchain.android.client
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.iconics.view.IconicsImageView
 import de.smartsquare.kickchain.android.client.findmatch.FindMatchActivity
+import de.smartsquare.kickchain.android.client.nearby.NearbyException
 import de.smartsquare.kickchain.android.client.user.User
 import de.smartsquare.kickchain.android.client.user.UserDialog
 import de.smartsquare.kickchain.android.client.user.UserManager
@@ -14,6 +19,12 @@ import kotterknife.bindView
  * @author Ruben Gees
  */
 class MainActivity : BaseActivity() {
+
+    companion object {
+        private const val FIND_MATCH_REQUEST_CODE = 23424
+    }
+
+    private val root by bindView<ViewGroup>(android.R.id.content)
 
     private val headline by bindView<TextView>(R.id.headline)
     private val subhead by bindView<TextView>(R.id.subhead)
@@ -49,6 +60,24 @@ class MainActivity : BaseActivity() {
         super.onDestroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == FIND_MATCH_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            val error = data.getSerializableExtra("error") as? NearbyException
+                ?: NearbyException(NearbyException.NearbyExceptionType.UNKNOWN)
+
+            val message = when (error.type) {
+                NearbyException.NearbyExceptionType.PERMISSION -> "Bitte gewähre die nötigen Berechtigungen"
+                NearbyException.NearbyExceptionType.API -> "Es gab ein Problem mit der Verbindung. Überprüfe ob du Internetzugriff hast"
+                NearbyException.NearbyExceptionType.UNKNOWN -> "Ein unbekannter Fehler ist aufgetreten"
+                NearbyException.NearbyExceptionType.EXPIRED -> null
+            }
+
+            if (message != null) {
+                Snackbar.make(root, message, Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
     private fun setupUI() {
         val safeUser = user
 
@@ -71,7 +100,7 @@ class MainActivity : BaseActivity() {
             startMatchStatus.visibility = View.GONE
 
             startMatchButton.setOnClickListener {
-                FindMatchActivity.navigateTo(this)
+                FindMatchActivity.navigateToForResult(this, FIND_MATCH_REQUEST_CODE)
             }
         }
 

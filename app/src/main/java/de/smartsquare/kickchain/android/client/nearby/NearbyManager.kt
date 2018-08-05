@@ -25,6 +25,7 @@ class NearbyManager {
 
     private var client: MessagesClient? = null
     private var currentMessage: Message? = null
+    private var enqueuedMessage: Message? = null
 
     private var messageListener: MessageListener? = null
     private var failureListener: OnFailureListener? = null
@@ -51,9 +52,16 @@ class NearbyManager {
 
         failureListener = OnFailureListener {
             if (it is ApiException) {
-                errorListener?.invoke(NearbyException(NearbyExceptionType.API, it.message, it))
+                // 17 Means the user has cancelled the permission dialog.
+                // I have not found a Constants class for this yet.
+
+                if (it.statusCode == 17) {
+                    errorListener?.invoke(NearbyException(NearbyExceptionType.PERMISSION))
+                } else {
+                    errorListener?.invoke(NearbyException(NearbyExceptionType.API))
+                }
             } else {
-                errorListener?.invoke(NearbyException(NearbyExceptionType.UNKNOWN, it.message, it))
+                errorListener?.invoke(NearbyException(NearbyExceptionType.UNKNOWN))
             }
         }
 
@@ -67,24 +75,30 @@ class NearbyManager {
 
         publishCallback = object : PublishCallback() {
             override fun onExpired() {
-                errorListener?.invoke(NearbyException(NearbyExceptionType.PERMISSION))
+                currentMessage?.also { publish(it) }
             }
         }
 
         subscribeCallback = object : SubscribeCallback() {
             override fun onExpired() {
-                errorListener?.invoke(NearbyException(NearbyExceptionType.EXPIRED))
+                subscribe(activity)
             }
         }
 
-        client = Nearby.getMessagesClient(activity).also {
-            statusCallback?.let { statusCallback -> it.registerStatusCallback(statusCallback) }
-
+        Nearby.getMessagesClient(activity).also { newClient ->
             messageListener?.let { listener ->
                 val options = SubscribeOptions.Builder().setCallback(subscribeCallback).build()
 
-                it.subscribe(listener, options)
-                    .also { task -> failureListener?.let { task.addOnFailureListener(it) } }
+                newClient.subscribe(listener, options).also { task ->
+                    failureListener?.let { task.addOnFailureListener(it) }
+
+                    task.addOnSuccessListener {
+                        client = newClient
+
+                        statusCallback?.let { statusCallback -> newClient.registerStatusCallback(statusCallback) }
+                        enqueuedMessage?.let { publish(it) }
+                    }
+                }
             }
         }
     }
@@ -96,23 +110,34 @@ class NearbyManager {
 
         client = null
         currentMessage = null
+        enqueuedMessage = null
         messageListener = null
         failureListener = null
         statusCallback = null
     }
 
     fun search(newMessage: SearchingMessage) {
+        publish(newMessage.toNearbyMessage())
+    }
+
+    private fun publish(message: Message) {
         val safeClient = client
 
         if (safeClient == null) {
-            throw IllegalStateException("Only call this method after subscribing")
+            enqueuedMessage = message
         } else {
             currentMessage?.let { client?.unpublish(it) }
-            currentMessage = newMessage.toNearbyMessage().also {
-                val options = PublishOptions.Builder().setCallback(publishCallback).build()
+            currentMessage = message
+            enqueuedMessage = null
 
-                safeClient.publish(it, options)
-                    .also { task -> failureListener?.let { task.addOnFailureListener(it) } }
+            val options = PublishOptions.Builder().setCallback(publishCallback).build()
+
+            safeClient.publish(message, options).also { task ->
+                failureListener?.let {
+                    currentMessage = null
+
+                    task.addOnFailureListener(it)
+                }
             }
         }
     }
