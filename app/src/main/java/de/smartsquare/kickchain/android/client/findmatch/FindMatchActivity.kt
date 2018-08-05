@@ -35,7 +35,7 @@ class FindMatchActivity : BaseActivity() {
         }
     }
 
-    private val nearbyManager = NearbyManager()
+    private var nearbyManager: NearbyManager? = null
 
     private var players by Delegates.observable(emptyList<Player>()) { _, _, _ ->
         updateLists()
@@ -79,11 +79,8 @@ class FindMatchActivity : BaseActivity() {
     override fun onStop() {
         players = emptyList()
 
-        nearbyManager.unsubscribe()
-
-        nearbyManager.searchingFoundListener = null
-        nearbyManager.searchingLostListener = null
-        nearbyManager.errorListener = null
+        nearbyManager?.disconnect()
+        nearbyManager = null
 
         super.onStop()
     }
@@ -103,22 +100,23 @@ class FindMatchActivity : BaseActivity() {
     private fun setupNearby() {
         val safeUser = user ?: throw IllegalStateException("The user should not be null on this screen")
 
-        nearbyManager.errorListener = {
-            setResult(RESULT_OK, Intent().putExtra("error", it))
+        nearbyManager = NearbyManager.connect(this).also {
+            it.errorListener = {
+                setResult(RESULT_OK, Intent().putExtra("error", it))
 
-            finish()
+                finish()
+            }
+
+            it.searchingFoundListener = { foundMessage ->
+                players = players.plus(foundMessage.toPlayer())
+            }
+
+            it.searchingLostListener = { lostMessage ->
+                players = players.minus(lostMessage.toPlayer())
+            }
+
+            it.search(SearchingMessage(safeUser.name, 0, 0))
         }
-
-        nearbyManager.searchingFoundListener = { foundMessage ->
-            players = players.plus(foundMessage.toPlayer())
-        }
-
-        nearbyManager.searchingLostListener = { lostMessage ->
-            players = players.minus(lostMessage.toPlayer())
-        }
-
-        nearbyManager.subscribe(this)
-        nearbyManager.search(SearchingMessage(safeUser.name, 0, 0))
     }
 
     private fun setupToolbar() {

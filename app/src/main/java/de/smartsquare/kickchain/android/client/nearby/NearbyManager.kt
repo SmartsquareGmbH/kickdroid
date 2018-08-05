@@ -5,7 +5,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.messages.Message
 import com.google.android.gms.nearby.messages.MessageListener
-import com.google.android.gms.nearby.messages.MessagesClient
 import com.google.android.gms.nearby.messages.PublishCallback
 import com.google.android.gms.nearby.messages.PublishOptions
 import com.google.android.gms.nearby.messages.StatusCallback
@@ -13,17 +12,27 @@ import com.google.android.gms.nearby.messages.SubscribeCallback
 import com.google.android.gms.nearby.messages.SubscribeOptions
 import com.google.android.gms.tasks.OnFailureListener
 import de.smartsquare.kickchain.android.client.nearby.NearbyException.NearbyExceptionType
+import java.lang.ref.WeakReference
 
 /**
  * @author Ruben Gees
  */
-class NearbyManager {
+class NearbyManager private constructor(activity: Activity) {
+
+    companion object {
+        fun connect(activity: Activity): NearbyManager {
+            return NearbyManager(activity)
+        }
+    }
 
     var searchingFoundListener: ((SearchingMessage) -> Unit)? = null
     var searchingLostListener: ((SearchingMessage) -> Unit)? = null
     var errorListener: ((NearbyException) -> Unit)? = null
 
-    private var client: MessagesClient? = null
+    private val currentActivity = WeakReference(activity)
+
+    private var isConnected = false
+
     private var currentMessage: Message? = null
     private var enqueuedMessage: Message? = null
 
@@ -33,9 +42,7 @@ class NearbyManager {
     private var publishCallback: PublishCallback? = null
     private var subscribeCallback: SubscribeCallback? = null
 
-    fun subscribe(activity: Activity) {
-        unsubscribe()
-
+    init {
         messageListener = object : MessageListener() {
             override fun onFound(newMessage: Message) {
                 if (newMessage.type == MessageType.SEARCHING.name) {
@@ -81,19 +88,55 @@ class NearbyManager {
 
         subscribeCallback = object : SubscribeCallback() {
             override fun onExpired() {
-                subscribe(activity)
+                subscribe()
             }
         }
 
-        Nearby.getMessagesClient(activity).also { newClient ->
-            messageListener?.let { listener ->
-                val options = SubscribeOptions.Builder().setCallback(subscribeCallback).build()
+        subscribe()
+    }
 
-                newClient.subscribe(listener, options).also { task ->
+    fun disconnect() {
+        val client = currentActivity.get()?.let { Nearby.getMessagesClient(it) }
+
+        currentMessage?.let { client?.unpublish(it) }
+        messageListener?.let { client?.unsubscribe(it) }
+        statusCallback?.let { client?.unregisterStatusCallback(it) }
+
+        isConnected = false
+
+        // Android is pain.
+        searchingFoundListener = null
+        searchingLostListener = null
+        errorListener = null
+
+        currentMessage = null
+        enqueuedMessage = null
+        messageListener = null
+        failureListener = null
+        statusCallback = null
+        publishCallback = null
+        subscribeCallback = null
+    }
+
+    fun search(newMessage: SearchingMessage) {
+        publish(newMessage.toNearbyMessage())
+    }
+
+    private fun subscribe() {
+        val safeActivity = currentActivity.get()
+        val safeMessageListener = messageListener
+
+        if (safeActivity != null && safeMessageListener != null) {
+            Nearby.getMessagesClient(safeActivity).also { newClient ->
+                val options = SubscribeOptions.Builder()
+                    .apply { subscribeCallback?.let { setCallback(subscribeCallback) } }
+                    .build()
+
+                newClient.subscribe(safeMessageListener, options).also { task ->
                     failureListener?.let { task.addOnFailureListener(it) }
 
                     task.addOnSuccessListener {
-                        client = newClient
+                        isConnected = true
 
                         statusCallback?.let { statusCallback -> newClient.registerStatusCallback(statusCallback) }
                         enqueuedMessage?.let { publish(it) }
@@ -103,42 +146,28 @@ class NearbyManager {
         }
     }
 
-    fun unsubscribe() {
-        currentMessage?.let { client?.unpublish(it) }
-        messageListener?.let { client?.unsubscribe(it) }
-        statusCallback?.let { client?.unregisterStatusCallback(it) }
-
-        client = null
-        currentMessage = null
-        enqueuedMessage = null
-        messageListener = null
-        failureListener = null
-        statusCallback = null
-    }
-
-    fun search(newMessage: SearchingMessage) {
-        publish(newMessage.toNearbyMessage())
-    }
-
     private fun publish(message: Message) {
-        val safeClient = client
+        val client = currentActivity.get()?.let { Nearby.getMessagesClient(it) }
 
-        if (safeClient == null) {
-            enqueuedMessage = message
-        } else {
-            currentMessage?.let { client?.unpublish(it) }
+        if (isConnected && client != null) {
+            currentMessage?.let { client.unpublish(it) }
+
             currentMessage = message
             enqueuedMessage = null
 
-            val options = PublishOptions.Builder().setCallback(publishCallback).build()
+            val options = PublishOptions.Builder()
+                .apply { publishCallback?.let { setCallback(publishCallback) } }
+                .build()
 
-            safeClient.publish(message, options).also { task ->
+            client.publish(message, options).also { task ->
                 failureListener?.let {
                     currentMessage = null
 
                     task.addOnFailureListener(it)
                 }
             }
+        } else {
+            enqueuedMessage = message
         }
     }
 }
