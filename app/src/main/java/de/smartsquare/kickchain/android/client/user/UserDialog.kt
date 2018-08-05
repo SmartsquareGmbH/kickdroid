@@ -1,10 +1,12 @@
 package de.smartsquare.kickchain.android.client.user
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -13,6 +15,7 @@ import com.google.android.material.textfield.TextInputLayout
 import de.smartsquare.kickchain.android.client.R
 import kotterknife.bindView
 import java.util.UUID
+
 
 /**
  * @author Ruben Gees
@@ -64,7 +67,11 @@ class UserDialog : DialogFragment() {
                 override fun onTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) = setError(null)
             })
 
+            nameInput.setText(user?.name ?: "")
             nameInput.requestFocus()
+
+            (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                ?.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
         }
 
         return result
