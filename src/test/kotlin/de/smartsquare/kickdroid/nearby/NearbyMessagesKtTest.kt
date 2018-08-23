@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test
 /**
  * @author Ruben Gees
  */
-internal class NearbyMessageTest {
+class NearbyMessagesKtTest {
 
-    internal val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder().build()
 
     @Test
-    internal fun `converting idle native message to nearby message`() {
+    fun `converting idle native message to nearby message`() {
         val nativeMessage = Message(resourceText("idle.json").toByteArray(), "IDLE")
 
         val nearbyMessage = nativeMessage.toNearbyMessage(moshi) as NearbyMessage.Idle
@@ -26,7 +26,7 @@ internal class NearbyMessageTest {
     }
 
     @Test
-    internal fun `converting invalid idle native message to nearby message`() {
+    fun `converting invalid idle native message to nearby message`() {
         val nativeMessage = Message(resourceText("invalid.json").toByteArray(), "IDLE")
 
         val nearbyMessageFunction = { nativeMessage.toNearbyMessage(moshi) }
@@ -35,7 +35,7 @@ internal class NearbyMessageTest {
     }
 
     @Test
-    internal fun `converting unknown native message to nearby message`() {
+    fun `converting unknown native message to nearby message`() {
         val nativeMessage = Message("".toByteArray(), "UNKNOWN")
 
         val nearbyMessageFunction = { nativeMessage.toNearbyMessage(moshi) }
@@ -44,7 +44,7 @@ internal class NearbyMessageTest {
     }
 
     @Test
-    internal fun `converting idle nearby message to native message`() {
+    fun `converting idle nearby message to native message`() {
         val nearbyMessage = NearbyMessage.Idle(123)
 
         val nativeMessage = nearbyMessage.toNativeMessage(moshi)
