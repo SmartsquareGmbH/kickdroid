@@ -4,16 +4,15 @@ import com.google.android.gms.nearby.messages.Message
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import de.smartsquare.kickdroid.nearby.NearbyMessage.IdleMessage.SearchingMessageContent
 
-private val typeMap = mapOf("IDLE" to NearbyMessage.IdleMessage::class.java)
+private val typeMap = mapOf("IDLE" to NearbyMessage.Idle::class.java)
 
-fun Message.toNearbyMessage(moshi: Moshi): NearbyMessage<*> {
+fun Message.toNearbyMessage(moshi: Moshi): NearbyMessage {
     return typeMap.get(type)
         ?.let {
             try {
                 moshi
-                    .adapter(NearbyMessage.IdleMessage::class.java)
+                    .adapter(it)
                     .fromJson(content.toString(Charsets.UTF_8))
             } catch (error: JsonDataException) {
                 throw NearbyInvalidMessageException("Message does not conform to expected data structure", error)
@@ -22,9 +21,7 @@ fun Message.toNearbyMessage(moshi: Moshi): NearbyMessage<*> {
         ?: throw NearbyUnknownMessageException("Unknown message type: $type")
 }
 
-sealed class NearbyMessage<T> {
-
-    abstract val content: T
+sealed class NearbyMessage {
 
     fun toNativeMessage(moshi: Moshi): Message {
         val type = typeMap.entries.find { (_, clazz) -> clazz == this.javaClass }?.key
@@ -34,11 +31,7 @@ sealed class NearbyMessage<T> {
     }
 
     @JsonClass(generateAdapter = true)
-    data class IdleMessage(
-        override val content: SearchingMessageContent
-    ) : NearbyMessage<SearchingMessageContent>() {
-
-        @JsonClass(generateAdapter = true)
-        data class SearchingMessageContent(val raspberryId: String)
-    }
+    data class Idle(
+        val raspberryId: Long
+    ) : NearbyMessage()
 }

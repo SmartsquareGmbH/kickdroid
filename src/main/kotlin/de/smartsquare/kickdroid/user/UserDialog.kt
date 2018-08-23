@@ -17,7 +17,6 @@ import kotterknife.bindView
 import org.koin.android.ext.android.inject
 import java.util.UUID
 
-
 /**
  * @author Ruben Gees
  */
@@ -67,7 +66,7 @@ class UserDialog : DialogFragment() {
                 override fun onTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) = setError(null)
             })
 
-            nameInput.setText(user?.name ?: "")
+            nameInput.setText(userManager.user?.name ?: "")
             nameInput.requestFocus()
 
             (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)

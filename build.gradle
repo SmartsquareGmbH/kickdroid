@@ -4,14 +4,17 @@ buildscript {
     ext {
         gradleVersion = "4.9"
 
-        kotlinVersion = "1.2.60"
+        kotlinVersion = "1.2.61"
         playServicesVersion = "15.0.1"
 
         androidGradlePluginVersion = "3.3.0-alpha07"
         gradleVersionsPluginVersion = "0.20.0"
+        junitPluginVersion = "1.2.0.0"
         ktlintGradleVersion = "5.0.0"
         ktlintVersion = "0.27.0"
         detektVersion = "1.0.0.RC8"
+        jacocoPluginVersion = "0.12.0"
+        jacocoVersion = "0.8.2"
 
         appcompatVersion = "1.0.0-rc01"
         recyclerviewVersion = "1.0.0-rc01"
@@ -21,7 +24,7 @@ buildscript {
         rxJavaVersion = "2.2.1"
         rxBindingVersion = "2.1.1"
         autodisposeVersion = "1.0.0-RC2"
-        kOptionlVersion = "1.6.0"
+        kOptionalVersion = "1.6.0"
 
         koinVersion = "0.9.3"
 
@@ -29,6 +32,10 @@ buildscript {
         iconicsVersion = "3.0.4"
         kotterknifeVersion = "2.0"
         communityMaterialTypefaceVersion = "2.0.46.1"
+
+        junitVersion = "5.2.0"
+        kluentVersion = "1.40"
+        kotlinJsonAssertVersion = "0.1.0"
 
         leakCanaryVersion = "1.6.1"
     }
@@ -42,7 +49,9 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$androidGradlePluginVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitPluginVersion"
 
+        classpath "com.vanniktech:gradle-android-junit-jacoco-plugin:$jacocoPluginVersion"
         classpath "com.github.ben-manes:gradle-versions-plugin:$gradleVersionsPluginVersion"
         classpath "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
         classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$ktlintGradleVersion"
@@ -53,16 +62,15 @@ apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-kapt"
 
+apply plugin: "de.mannodermaus.android-junit5"
+apply plugin: "com.vanniktech.android.junit.jacoco"
+
 apply plugin: "com.github.ben-manes.versions"
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: "io.gitlab.arturbosch.detekt"
 
 android {
     compileSdkVersion 28
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
 
     defaultConfig {
         applicationId "de.smartsquare.kickdroid"
@@ -74,13 +82,22 @@ android {
         resConfigs "en", "de"
     }
 
+    sourceSets.each {
+        it.java.srcDirs += "src/$it.name/kotlin"
+    }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
     signingConfigs {
         if (shouldSign()) {
             release {
-                storeFile file(getFromSecrets('RELEASE_STORE_FILE'))
-                storePassword getFromSecrets('RELEASE_STORE_PASSWORD')
-                keyAlias getFromSecrets('RELEASE_KEY_ALIAS')
-                keyPassword getFromSecrets('RELEASE_KEY_PASSWORD')
+                storeFile file(getFromSecrets("RELEASE_STORE_FILE"))
+                storePassword getFromSecrets("RELEASE_STORE_PASSWORD")
+                keyAlias getFromSecrets("RELEASE_KEY_ALIAS")
+                keyPassword getFromSecrets("RELEASE_KEY_PASSWORD")
             }
         }
     }
@@ -89,9 +106,9 @@ android {
         boolean shouldSign = shouldSign()
 
         if (!shouldSign) {
-            logger.warn('This build will not be signed because it is missing the keystore info. Please add ' +
-                    'values for "RELEASE_STORE_FILE", "RELEASE_STORE_PASSWORD", "RELEASE_KEY_ALIAS" and ' +
-                    '"RELEASE_KEY_PASSWORD" to your secrets.properties file if you want the apk to be signed.')
+            logger.warn("This build will not be signed because it is missing the keystore info. Please add " +
+                    "values for 'RELEASE_STORE_FILE', #RELEASE_STORE_PASSWORD', 'RELEASE_KEY_ALIAS' and " +
+                    "'RELEASE_KEY_PASSWORD' to your secrets.properties file if you want the apk to be signed.")
         }
 
         release {
@@ -117,7 +134,7 @@ android {
 repositories {
     google()
     jcenter()
-    maven { url 'https://jitpack.io' }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -138,13 +155,20 @@ dependencies {
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion"
     implementation "com.uber.autodispose:autodispose-ktx:$autodisposeVersion"
     implementation "com.uber.autodispose:autodispose-android-archcomponents-ktx:$autodisposeVersion"
-    implementation "com.gojuno.koptional:koptional-rxjava2-extensions:$kOptionlVersion"
+    implementation "com.gojuno.koptional:koptional-rxjava2-extensions:$kOptionalVersion"
 
     implementation "com.squareup.moshi:moshi:$moshiVersion"
     implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
     implementation "com.mikepenz:iconics-core:$iconicsVersion@aar"
     implementation "com.mikepenz:iconics-views:$iconicsVersion@aar"
     implementation "com.mikepenz:community-material-typeface:$communityMaterialTypefaceVersion@aar"
+
+    testImplementation "com.gregwoodfill.assert:kotlin-json-assert:$kotlinJsonAssertVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.amshove.kluent:kluent-android:$kluentVersion"
+    testImplementation "org.koin:koin-test:$koinVersion"
+
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
@@ -173,19 +197,19 @@ ktlint {
     reporters = ["CHECKSTYLE"]
 }
 
-wrapper {
-    setGradleVersion(project.ext.gradleVersion)
+junitJacoco {
+    jacocoVersion = project.ext.jacocoVersion
 }
 
-gradle.projectsEvaluated {
-    check.dependsOn detektCheck
+wrapper {
+    gradleVersion = project.ext.gradleVersion
 }
 
 static String getFromSecrets(String key) {
     Properties result = new Properties()
 
     try {
-        result.load(new FileInputStream(new File('secrets.properties')))
+        result.load(new FileInputStream(new File("secrets.properties")))
     } catch (Exception ignored) {
         throw new GradleException("Please add a secrets.properties file with a value for $key to perform this action.")
     }
@@ -202,11 +226,11 @@ static boolean shouldSign() {
     Properties result = new Properties()
 
     try {
-        result.load(new FileInputStream(new File('secrets.properties')))
+        result.load(new FileInputStream(new File("secrets.properties")))
     } catch (Exception ignored) {
         return false
     }
 
-    return result.containsKey('RELEASE_STORE_FILE') && result.containsKey('RELEASE_STORE_PASSWORD') &&
-            result.containsKey('RELEASE_KEY_ALIAS') && result.containsKey('RELEASE_KEY_PASSWORD')
+    return result.containsKey("RELEASE_STORE_FILE") && result.containsKey("RELEASE_STORE_PASSWORD") &&
+            result.containsKey("RELEASE_KEY_ALIAS") && result.containsKey("RELEASE_KEY_PASSWORD")
 }

@@ -12,7 +12,7 @@ class NearbyWrapper(private val internalClient: MessagesClient, private val mosh
 
     private var currentMessage: Message? = null
 
-    fun send(message: NearbyMessage<*>) {
+    fun send(message: NearbyMessage) {
         currentMessage?.also { internalClient.unpublish(it) }
 
         currentMessage = message.toNativeMessage(moshi)
@@ -20,14 +20,14 @@ class NearbyWrapper(private val internalClient: MessagesClient, private val mosh
         currentMessage?.also { internalClient.publish(it) }
     }
 
-    fun foundMessages(): Observable<NearbyMessage<*>> {
+    fun foundMessages(): Observable<NearbyMessage> {
         return NearbyMessageObservable(internalClient)
             .filter { it is NearbyEvent.Found }
             .map { it as NearbyEvent.Found }
             .map { it.message.toNearbyMessage(moshi) }
     }
 
-    fun lostMessages(): Observable<NearbyMessage<*>> {
+    fun lostMessages(): Observable<NearbyMessage> {
         return NearbyMessageObservable(internalClient)
             .filter { it is NearbyEvent.Lost }
             .map { it as NearbyEvent.Lost }
