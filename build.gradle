@@ -9,6 +9,9 @@ buildscript {
 
         androidGradlePluginVersion = "3.3.0-alpha07"
         gradleVersionsPluginVersion = "0.20.0"
+        ktlintGradleVersion = "5.0.0"
+        ktlintVersion = "0.27.0"
+        detektVersion = "1.0.0.RC8"
 
         appcompatVersion = "1.0.0-rc01"
         recyclerviewVersion = "1.0.0-rc01"
@@ -31,6 +34,7 @@ buildscript {
     }
 
     repositories {
+        gradlePluginPortal()
         google()
         jcenter()
     }
@@ -40,13 +44,18 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
         classpath "com.github.ben-manes:gradle-versions-plugin:$gradleVersionsPluginVersion"
+        classpath "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
+        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$ktlintGradleVersion"
     }
 }
 
-apply plugin: "com.github.ben-manes.versions"
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-kapt"
+
+apply plugin: "com.github.ben-manes.versions"
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: "io.gitlab.arturbosch.detekt"
 
 android {
     compileSdkVersion 28
@@ -149,8 +158,27 @@ tasks.withType(KotlinCompile).all {
     }
 }
 
+detekt {
+    version = detektVersion
+
+    profile("main") {
+        input = "$projectDir/src/main/kotlin"
+        config = "$projectDir/config/detekt/detekt.yml"
+        output = "$buildDir/reports/detekt"
+    }
+}
+
+ktlint {
+    version = ktlintVersion
+    reporters = ["CHECKSTYLE"]
+}
+
 wrapper {
     setGradleVersion(project.ext.gradleVersion)
+}
+
+gradle.projectsEvaluated {
+    check.dependsOn detektCheck
 }
 
 static String getFromSecrets(String key) {

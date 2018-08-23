@@ -19,7 +19,7 @@ fun Message.toNearbyMessage(moshi: Moshi): NearbyMessage<*> {
                 throw NearbyInvalidMessageException("Message does not conform to expected data structure", error)
             }
         }
-        ?: throw NearbyUnknownMessageException("Unknown message type: ${type}")
+        ?: throw NearbyUnknownMessageException("Unknown message type: $type")
 }
 
 sealed class NearbyMessage<T> {
