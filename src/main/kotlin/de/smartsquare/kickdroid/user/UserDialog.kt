@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client.user
+package de.smartsquare.kickdroid.user
 
 import android.app.Dialog
 import android.content.Context
@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.textfield.TextInputLayout
-import de.smartsquare.kickchain.android.client.R
+import de.smartsquare.kickdroid.R
 import kotterknife.bindView
 import org.koin.android.ext.android.inject
 import java.util.UUID
@@ -27,7 +27,10 @@ class UserDialog : DialogFragment() {
         private const val TAG = "user_dialog"
 
         fun show(activity: FragmentActivity) {
-            UserDialog().show(activity.supportFragmentManager, TAG)
+            UserDialog().show(
+                activity.supportFragmentManager,
+                TAG
+            )
         }
     }
 

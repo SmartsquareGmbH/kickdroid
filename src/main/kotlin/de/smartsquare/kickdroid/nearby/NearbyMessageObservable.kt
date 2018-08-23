@@ -1,9 +1,9 @@
-package de.smartsquare.kickchain.android.client.nearby
+package de.smartsquare.kickdroid.nearby
 
 import com.google.android.gms.nearby.messages.Message
 import com.google.android.gms.nearby.messages.MessageListener
 import com.google.android.gms.nearby.messages.MessagesClient
-import de.smartsquare.kickchain.android.client.checkMainThread
+import de.smartsquare.kickdroid.checkMainThread
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable
@@ -20,7 +20,11 @@ class NearbyMessageObservable(private val internalClient: MessagesClient) :
             return
         }
 
-        val listener = Listener(internalClient, observer)
+        val listener =
+            Listener(
+                internalClient,
+                observer
+            )
 
         observer.onSubscribe(listener)
         listener.subscribeInternal(internalClient)

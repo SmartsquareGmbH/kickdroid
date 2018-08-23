@@ -1,10 +1,10 @@
-package de.smartsquare.kickchain.android.client.nearby
+package de.smartsquare.kickdroid.nearby
 
 import com.google.android.gms.nearby.messages.Message
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonDataException
 import com.squareup.moshi.Moshi
-import de.smartsquare.kickchain.android.client.nearby.NearbyMessage.IdleMessage.SearchingMessageContent
+import de.smartsquare.kickdroid.nearby.NearbyMessage.IdleMessage.SearchingMessageContent
 
 private val typeMap = mapOf("IDLE" to NearbyMessage.IdleMessage::class.java)
 

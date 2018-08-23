@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client
+package de.smartsquare.kickdroid
 
 import android.app.Application
 import com.mikepenz.community_material_typeface_library.CommunityMaterial
@@ -21,6 +21,12 @@ class MainApplication : Application() {
         LeakCanary.install(this)
         Iconics.registerFont(CommunityMaterial())
 
-        startKoin(this, listOf(moshi, nearby, user))
+        startKoin(
+            this, listOf(
+                moshi,
+                nearby,
+                user
+            )
+        )
     }
 }

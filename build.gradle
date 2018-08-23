@@ -44,22 +44,141 @@ buildscript {
 }
 
 apply plugin: "com.github.ben-manes.versions"
-apply plugin: "base"
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-kapt"
 
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
+android {
+    compileSdkVersion 28
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 
-    tasks.withType(KotlinCompile).all {
-        kotlinOptions {
-            freeCompilerArgs = ["-Xjsr305=strict"]
+    defaultConfig {
+        applicationId "de.smartsquare.kickdroid"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0.0"
+
+        resConfigs "en", "de"
+    }
+
+    signingConfigs {
+        if (shouldSign()) {
+            release {
+                storeFile file(getFromSecrets('RELEASE_STORE_FILE'))
+                storePassword getFromSecrets('RELEASE_STORE_PASSWORD')
+                keyAlias getFromSecrets('RELEASE_KEY_ALIAS')
+                keyPassword getFromSecrets('RELEASE_KEY_PASSWORD')
+            }
         }
+    }
+
+    buildTypes {
+        boolean shouldSign = shouldSign()
+
+        if (!shouldSign) {
+            logger.warn('This build will not be signed because it is missing the keystore info. Please add ' +
+                    'values for "RELEASE_STORE_FILE", "RELEASE_STORE_PASSWORD", "RELEASE_KEY_ALIAS" and ' +
+                    '"RELEASE_KEY_PASSWORD" to your secrets.properties file if you want the apk to be signed.')
+        }
+
+        release {
+            postprocessing {
+                removeUnusedCode true
+                removeUnusedResources true
+                obfuscate true
+                optimizeCode true
+                proguardFiles "config/proguard-rules.pro"
+            }
+
+            if (shouldSign) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    lintOptions {
+        warningsAsErrors = true
+    }
+}
+
+repositories {
+    google()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+
+    implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "androidx.cardview:cardview:$recyclerviewVersion"
+    implementation "androidx.recyclerview:recyclerview:$cardviewVersion"
+    implementation "com.google.android.material:material:$materialDesignVersion"
+
+    implementation "com.google.android.gms:play-services-nearby:$playServicesVersion"
+
+    implementation "org.koin:koin-core:$koinVersion"
+    implementation "org.koin:koin-android:$koinVersion"
+    implementation "org.koin:koin-android-architecture:$koinVersion"
+
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion"
+    implementation "com.uber.autodispose:autodispose-ktx:$autodisposeVersion"
+    implementation "com.uber.autodispose:autodispose-android-archcomponents-ktx:$autodisposeVersion"
+    implementation "com.gojuno.koptional:koptional-rxjava2-extensions:$kOptionlVersion"
+
+    implementation "com.squareup.moshi:moshi:$moshiVersion"
+    implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
+    implementation "com.mikepenz:iconics-core:$iconicsVersion@aar"
+    implementation "com.mikepenz:iconics-views:$iconicsVersion@aar"
+    implementation "com.mikepenz:community-material-typeface:$communityMaterialTypefaceVersion@aar"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
+}
+
+tasks.withType(KotlinCompile).all {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xjsr305=strict"]
     }
 }
 
 wrapper {
     setGradleVersion(project.ext.gradleVersion)
+}
+
+static String getFromSecrets(String key) {
+    Properties result = new Properties()
+
+    try {
+        result.load(new FileInputStream(new File('secrets.properties')))
+    } catch (Exception ignored) {
+        throw new GradleException("Please add a secrets.properties file with a value for $key to perform this action.")
+    }
+
+    if (!result.containsKey(key)) {
+        throw new GradleException("Please include a value for $key in your secrets.properties " +
+                "file to perform this action.")
+    }
+
+    return result[key]
+}
+
+static boolean shouldSign() {
+    Properties result = new Properties()
+
+    try {
+        result.load(new FileInputStream(new File('secrets.properties')))
+    } catch (Exception ignored) {
+        return false
+    }
+
+    return result.containsKey('RELEASE_STORE_FILE') && result.containsKey('RELEASE_STORE_PASSWORD') &&
+            result.containsKey('RELEASE_KEY_ALIAS') && result.containsKey('RELEASE_KEY_PASSWORD')
 }

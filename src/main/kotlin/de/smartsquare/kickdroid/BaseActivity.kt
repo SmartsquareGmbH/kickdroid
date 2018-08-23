@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client
+package de.smartsquare.kickdroid
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity

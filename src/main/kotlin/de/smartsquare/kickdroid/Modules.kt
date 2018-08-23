@@ -1,11 +1,11 @@
-package de.smartsquare.kickchain.android.client
+package de.smartsquare.kickdroid
 
 import android.app.Activity
 import android.preference.PreferenceManager
 import com.google.android.gms.nearby.Nearby
 import com.squareup.moshi.Moshi
-import de.smartsquare.kickchain.android.client.nearby.NearbyWrapper
-import de.smartsquare.kickchain.android.client.user.UserManager
+import de.smartsquare.kickdroid.nearby.NearbyWrapper
+import de.smartsquare.kickdroid.user.UserManager
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module.applicationContext
@@ -18,7 +18,12 @@ val moshi = applicationContext {
 
 val nearby = applicationContext {
     factory { params -> Nearby.getMessagesClient(params[ACTIVITY_PARAMETER]) }
-    factory { params -> NearbyWrapper(get(parameters = { params.values }), get()) }
+    factory { params ->
+        NearbyWrapper(
+            get(parameters = { params.values }),
+            get()
+        )
+    }
 }
 
 val user = applicationContext {

@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client.user
+package de.smartsquare.kickdroid.user
 
 import android.content.SharedPreferences
 import com.gojuno.koptional.Optional

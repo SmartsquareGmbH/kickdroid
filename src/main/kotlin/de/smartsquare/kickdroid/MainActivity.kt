@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client
+package de.smartsquare.kickdroid
 
 import android.os.Bundle
 import android.view.View
@@ -6,10 +6,10 @@ import android.widget.TextView
 import com.mikepenz.iconics.view.IconicsImageView
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
 import com.uber.autodispose.autoDisposable
-import de.smartsquare.kickchain.android.client.nearby.NearbyWrapper
-import de.smartsquare.kickchain.android.client.user.User
-import de.smartsquare.kickchain.android.client.user.UserDialog
-import de.smartsquare.kickchain.android.client.user.UserManager
+import de.smartsquare.kickdroid.nearby.NearbyWrapper
+import de.smartsquare.kickdroid.user.User
+import de.smartsquare.kickdroid.user.UserDialog
+import de.smartsquare.kickdroid.user.UserManager
 import kotterknife.bindView
 import org.koin.android.ext.android.inject
 

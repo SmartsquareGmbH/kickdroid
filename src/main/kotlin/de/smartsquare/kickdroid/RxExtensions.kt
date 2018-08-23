@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client
+package de.smartsquare.kickdroid
 
 import android.os.Looper
 import io.reactivex.Observer

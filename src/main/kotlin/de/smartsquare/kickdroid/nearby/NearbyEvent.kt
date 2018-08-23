@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client.nearby
+package de.smartsquare.kickdroid.nearby
 
 import com.google.android.gms.nearby.messages.Message
 

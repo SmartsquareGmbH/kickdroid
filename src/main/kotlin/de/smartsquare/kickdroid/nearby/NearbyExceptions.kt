@@ -1,4 +1,4 @@
-package de.smartsquare.kickchain.android.client.nearby
+package de.smartsquare.kickdroid.nearby
 
 open class NearbyException constructor(
     message: String? = null,

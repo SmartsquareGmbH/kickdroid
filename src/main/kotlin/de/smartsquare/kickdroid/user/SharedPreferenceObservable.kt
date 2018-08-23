@@ -1,7 +1,7 @@
-package de.smartsquare.kickchain.android.client.user
+package de.smartsquare.kickdroid.user
 
 import android.content.SharedPreferences
-import de.smartsquare.kickchain.android.client.checkMainThread
+import de.smartsquare.kickdroid.checkMainThread
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable
@@ -17,7 +17,8 @@ class SharedPreferenceObservable(private val preferences: SharedPreferences) :
             return
         }
 
-        val listener = Listener(preferences, observer)
+        val listener =
+            Listener(preferences, observer)
 
         observer.onSubscribe(listener)
         preferences.registerOnSharedPreferenceChangeListener(listener)
