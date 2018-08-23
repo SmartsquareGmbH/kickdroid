@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package de.smartsquare.kickdroid.nearby
 
 import com.google.android.gms.nearby.messages.Message
