@@ -12,29 +12,9 @@
     <string name="main_matches_not_available">Matches noch nicht verfügbar</string>
     <string name="main_set_name_status">Lege erst deinen Namen fest</string>
 
-    <string name="find_match_loading_indicator">Ladeindikator</string>
-    <string name="find_match_searching">Suche nach Spielern…</string>
-
-    <string name="find_match_nearby_info">
-        Es werden Spieler in deiner Nähe mithilfe der Nearby Dienste gesucht.
-        Vergewissere dich, dass du eine aktive Internetverbindung hast und nicht zu weit entfernt bist.
-    </string>
-
-    <string name="find_match_team_mates">Mitspieler</string>
-    <string name="find_match_opponents">Gegenspieler</string>
-    <string name="find_match_start">{cmd-sword-cross} Match starten</string>
-    <string name="find_match_start_missing_opponent">{cmd-cancel} Match starten</string>
-    <string name="find_match_select_opponent">Wähle mindestens einen Gegenspieler aus</string>
-
-    <string name="find_match_player_no_games">Noch keine Matches gespielt</string>
-
     <string name="user_name_title">Name festlegen</string>
     <string name="user_set_action">Festlegen</string>
     <string name="user_cancel_action">Abbrechen</string>
     <string name="user_name_hint">Name</string>
     <string name="user_empty_error">Bitte gib etwas ein</string>
-
-    <string name="error_permission">Bitte gewähre die nötigen Berechtigungen</string>
-    <string name="error_api">Es gab ein Problem mit der Verbindung. Überprüfe ob du Internetzugriff hast</string>
-    <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>
 </resources>

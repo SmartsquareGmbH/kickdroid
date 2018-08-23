@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.textfield.TextInputLayout
 import de.smartsquare.kickchain.android.client.R
 import kotterknife.bindView
+import org.koin.android.ext.android.inject
 import java.util.UUID
 
 
@@ -30,8 +31,7 @@ class UserDialog : DialogFragment() {
         }
     }
 
-    private val user: User?
-        get() = UserManager.getUser(requireContext())
+    private val userManager by inject<UserManager>()
 
     private val nameInputContainer by bindView<TextInputLayout>(R.id.nameInputContainer)
     private val nameInput by bindView<EditText>(R.id.nameInput)
@@ -55,7 +55,7 @@ class UserDialog : DialogFragment() {
                 } else {
                     val id = UUID.randomUUID().toString()
 
-                    UserManager.setUser(requireContext(), user?.copy(name = name) ?: User(id, name))
+                    userManager.user = userManager.user?.copy(name = name) ?: User(id, name)
 
                     dismiss()
                 }

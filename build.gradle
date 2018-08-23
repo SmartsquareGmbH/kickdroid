@@ -5,15 +5,26 @@ buildscript {
         gradleVersion = "4.9"
 
         kotlinVersion = "1.2.60"
-        androidXVersion = "1.0.0-beta01"
         playServicesVersion = "15.0.1"
 
-        androidGradlePluginVersion = "3.3.0-alpha04"
+        androidGradlePluginVersion = "3.3.0-alpha07"
         gradleVersionsPluginVersion = "0.20.0"
 
-        kotterknifeVersion = "a7cedb3438"
+        appcompatVersion = "1.0.0-rc01"
+        recyclerviewVersion = "1.0.0-rc01"
+        cardviewVersion = "1.0.0-rc01"
+        materialDesignVersion = "1.0.0-rc01"
+
+        rxJavaVersion = "2.2.1"
+        rxBindingVersion = "2.1.1"
+        autodisposeVersion = "1.0.0-RC2"
+        kOptionlVersion = "1.6.0"
+
+        koinVersion = "0.9.3"
+
         moshiVersion = "1.6.0"
         iconicsVersion = "3.0.4"
+        kotterknifeVersion = "2.0"
         communityMaterialTypefaceVersion = "2.0.46.1"
 
         leakCanaryVersion = "1.6.1"

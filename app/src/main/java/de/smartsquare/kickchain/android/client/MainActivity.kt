@@ -1,30 +1,22 @@
 package de.smartsquare.kickchain.android.client
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.iconics.view.IconicsImageView
-import de.smartsquare.kickchain.android.client.findmatch.FindMatchActivity
-import de.smartsquare.kickchain.android.client.nearby.NearbyException
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
+import com.uber.autodispose.autoDisposable
+import de.smartsquare.kickchain.android.client.nearby.NearbyWrapper
 import de.smartsquare.kickchain.android.client.user.User
 import de.smartsquare.kickchain.android.client.user.UserDialog
 import de.smartsquare.kickchain.android.client.user.UserManager
 import kotterknife.bindView
+import org.koin.android.ext.android.inject
 
 /**
  * @author Ruben Gees
  */
 class MainActivity : BaseActivity() {
-
-    companion object {
-        private const val FIND_MATCH_REQUEST_CODE = 23424
-    }
-
-    private val root by bindView<ViewGroup>(android.R.id.content)
 
     private val headline by bindView<TextView>(R.id.headline)
     private val subhead by bindView<TextView>(R.id.subhead)
@@ -35,53 +27,28 @@ class MainActivity : BaseActivity() {
     private val startMatchStatus by bindView<TextView>(R.id.startMatchStatus)
     private val bestPlayersButton by bindView<View>(R.id.bestPlayersButton)
 
-    private val user: User?
-        get() = UserManager.getUser(this)
-
-    private var userChangeListener: ((User?) -> Unit)? = null
+    private val userManager by inject<UserManager>()
+    private val nearbyClient by activityInject<NearbyWrapper>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        setupUI()
+        setupUI(userManager.user)
 
-        userChangeListener = { _: User? -> setupUI() }
-            .also { UserManager.registerUserChangeListener(this, it) }
-    }
+        userManager.userChanges()
+            .autoDisposable(AndroidLifecycleScopeProvider.from(this))
+            .subscribe { setupUI(it.toNullable()) }
 
-    override fun onDestroy() {
-        userChangeListener?.also {
-            UserManager.unregisterUserChangeListener(this, it)
-
-            userChangeListener = null
-        }
-
-        super.onDestroy()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == FIND_MATCH_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            val error = data.getSerializableExtra("error") as? NearbyException
-                ?: NearbyException(NearbyException.NearbyExceptionType.UNKNOWN)
-
-            val message = when (error.type) {
-                NearbyException.NearbyExceptionType.PERMISSION -> getString(R.string.error_permission)
-                NearbyException.NearbyExceptionType.API -> getString(R.string.error_api)
-                NearbyException.NearbyExceptionType.UNKNOWN -> getString(R.string.error_unknown)
-                NearbyException.NearbyExceptionType.EXPIRED -> null
+        nearbyClient.foundMessages()
+            .autoDisposable(AndroidLifecycleScopeProvider.from(this))
+            .subscribe {
+                // TODO: Show Player matchup screen
             }
-
-            if (message != null) {
-                Snackbar.make(root, message, Snackbar.LENGTH_LONG).show()
-            }
-        }
     }
 
-    private fun setupUI() {
-        val safeUser = user
-
-        if (safeUser == null) {
+    private fun setupUI(user: User?) {
+        if (user == null) {
             headline.text = getString(R.string.main_welcome)
             subhead.text = getString(R.string.main_set_name)
 
@@ -92,7 +59,7 @@ class MainActivity : BaseActivity() {
             startMatchButton.setOnClickListener(null)
             startMatchButton.isClickable = false
         } else {
-            headline.text = getString(R.string.main_welcome_back, safeUser.name)
+            headline.text = getString(R.string.main_welcome_back, user.name)
             subhead.text = getString(R.string.main_status_no_games)
 
             startMatchIcon.icon = startMatchIcon.icon.colorRes(R.color.colorPrimary)
@@ -100,7 +67,7 @@ class MainActivity : BaseActivity() {
             startMatchStatus.visibility = View.GONE
 
             startMatchButton.setOnClickListener {
-                FindMatchActivity.navigateToForResult(this, FIND_MATCH_REQUEST_CODE)
+                // TODO
             }
         }
 
