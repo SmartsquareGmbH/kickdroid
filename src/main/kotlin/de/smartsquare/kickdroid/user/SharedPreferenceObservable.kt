@@ -9,16 +9,14 @@ import io.reactivex.android.MainThreadDisposable
 /**
  * @author Ruben Gees
  */
-class SharedPreferenceObservable(private val preferences: SharedPreferences) :
-    Observable<String>() {
+class SharedPreferenceObservable(private val preferences: SharedPreferences) : Observable<String>() {
 
     override fun subscribeActual(observer: Observer<in String>) {
         if (!observer.checkMainThread()) {
             return
         }
 
-        val listener =
-            Listener(preferences, observer)
+        val listener = Listener(preferences, observer)
 
         observer.onSubscribe(listener)
         preferences.registerOnSharedPreferenceChangeListener(listener)

@@ -16,10 +16,7 @@ fun Message.toNearbyMessage(moshi: Moshi): NearbyMessage<*> {
                     .adapter(NearbyMessage.IdleMessage::class.java)
                     .fromJson(content.toString(Charsets.UTF_8))
             } catch (error: JsonDataException) {
-                throw NearbyInvalidMessageException(
-                    "Message does not conform to expected data structure",
-                    error
-                )
+                throw NearbyInvalidMessageException("Message does not conform to expected data structure", error)
             }
         }
         ?: throw NearbyUnknownMessageException("Unknown message type: ${type}")

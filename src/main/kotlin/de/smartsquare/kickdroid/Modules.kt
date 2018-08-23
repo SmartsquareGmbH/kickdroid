@@ -18,12 +18,7 @@ val moshi = applicationContext {
 
 val nearby = applicationContext {
     factory { params -> Nearby.getMessagesClient(params[ACTIVITY_PARAMETER]) }
-    factory { params ->
-        NearbyWrapper(
-            get(parameters = { params.values }),
-            get()
-        )
-    }
+    factory { params -> NearbyWrapper(get(parameters = { params.values }), get()) }
 }
 
 val user = applicationContext {
@@ -31,5 +26,4 @@ val user = applicationContext {
     bean { UserManager(get()) }
 }
 
-inline fun <reified T> Activity.activityInject(): Lazy<T> =
-    inject(parameters = { mapOf(ACTIVITY_PARAMETER to this) })
+inline fun <reified T> Activity.activityInject(): Lazy<T> = inject(parameters = { mapOf(ACTIVITY_PARAMETER to this) })

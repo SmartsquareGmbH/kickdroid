@@ -27,10 +27,7 @@ class UserDialog : DialogFragment() {
         private const val TAG = "user_dialog"
 
         fun show(activity: FragmentActivity) {
-            UserDialog().show(
-                activity.supportFragmentManager,
-                TAG
-            )
+            UserDialog().show(activity.supportFragmentManager, TAG)
         }
     }
 

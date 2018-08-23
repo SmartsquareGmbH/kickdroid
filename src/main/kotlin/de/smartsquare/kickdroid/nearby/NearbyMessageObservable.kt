@@ -12,19 +12,14 @@ import java.util.concurrent.atomic.AtomicReference
 /**
  * @author Ruben Gees
  */
-class NearbyMessageObservable(private val internalClient: MessagesClient) :
-    Observable<NearbyEvent>() {
+class NearbyMessageObservable(private val internalClient: MessagesClient) : Observable<NearbyEvent>() {
 
     override fun subscribeActual(observer: Observer<in NearbyEvent>) {
         if (!observer.checkMainThread()) {
             return
         }
 
-        val listener =
-            Listener(
-                internalClient,
-                observer
-            )
+        val listener = Listener(internalClient, observer)
 
         observer.onSubscribe(listener)
         listener.subscribeInternal(internalClient)

@@ -22,11 +22,7 @@ class MainApplication : Application() {
         Iconics.registerFont(CommunityMaterial())
 
         startKoin(
-            this, listOf(
-                moshi,
-                nearby,
-                user
-            )
+            this, listOf(moshi, nearby, user)
         )
     }
 }
