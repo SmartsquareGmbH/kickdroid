@@ -34,7 +34,8 @@ buildscript {
         communityMaterialTypefaceVersion = "2.0.46.1"
 
         junitVersion = "5.2.0"
-        kluentVersion = "1.40"
+        kluentVersion = "1.41"
+        mockkVersion = "1.8.6"
         kotlinJsonAssertVersion = "0.1.0"
 
         leakCanaryVersion = "1.6.1"
@@ -167,6 +168,7 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testImplementation "org.amshove.kluent:kluent-android:$kluentVersion"
     testImplementation "org.koin:koin-test:$koinVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 

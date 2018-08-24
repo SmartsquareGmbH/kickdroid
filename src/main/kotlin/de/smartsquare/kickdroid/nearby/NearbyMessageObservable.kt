@@ -3,7 +3,6 @@ package de.smartsquare.kickdroid.nearby
 import com.google.android.gms.nearby.messages.Message
 import com.google.android.gms.nearby.messages.MessageListener
 import com.google.android.gms.nearby.messages.MessagesClient
-import de.smartsquare.kickdroid.checkMainThread
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.MainThreadDisposable
@@ -15,10 +14,6 @@ import java.util.concurrent.atomic.AtomicReference
 class NearbyMessageObservable(private val internalClient: MessagesClient) : Observable<NearbyEvent>() {
 
     override fun subscribeActual(observer: Observer<in NearbyEvent>) {
-        if (!observer.checkMainThread()) {
-            return
-        }
-
         val listener = Listener(internalClient, observer)
 
         observer.onSubscribe(listener)
