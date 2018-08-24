@@ -5,43 +5,45 @@ import com.google.android.gms.nearby.messages.MessageListener
 import com.google.android.gms.nearby.messages.MessagesClient
 import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.android.MainThreadDisposable
-import java.util.concurrent.atomic.AtomicReference
+import io.reactivex.disposables.Disposable
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @author Ruben Gees
  */
-class NearbyMessageObservable(private val internalClient: MessagesClient) : Observable<NearbyEvent>() {
+class NearbyMessageObservable(private val internalClient: MessagesClient) :
+    Observable<NearbyEvent>() {
 
     override fun subscribeActual(observer: Observer<in NearbyEvent>) {
         val listener = Listener(internalClient, observer)
 
         observer.onSubscribe(listener)
-        listener.subscribeInternal(internalClient)
+        internalClient.subscribe(listener)
     }
 
     private class Listener(
         private val internalClient: MessagesClient,
         private val observer: Observer<in NearbyEvent>
-    ) : MainThreadDisposable() {
+    ) : MessageListener(), Disposable {
 
-        private val messageListener = AtomicReference<MessageListener>(object : MessageListener() {
-            override fun onFound(message: Message) {
-                observer.onNext(NearbyEvent.Found(message))
-            }
+        private val unsubscribed = AtomicBoolean()
 
-            override fun onLost(message: Message) {
-                observer.onNext(NearbyEvent.Lost(message))
-            }
-        })
-
-        fun subscribeInternal(internalClient: MessagesClient) {
-            internalClient.subscribe(messageListener.get())
+        override fun onFound(message: Message) {
+            observer.onNext(NearbyEvent.Found(message))
         }
 
-        override fun onDispose() {
-            internalClient.unsubscribe(messageListener.get())
-            messageListener.set(null)
+        override fun onLost(message: Message) {
+            observer.onNext(NearbyEvent.Lost(message))
+        }
+
+        override fun isDisposed(): Boolean {
+            return unsubscribed.get()
+        }
+
+        override fun dispose() {
+            if (unsubscribed.compareAndSet(false, true)) {
+                internalClient.unsubscribe(this)
+            }
         }
     }
 }

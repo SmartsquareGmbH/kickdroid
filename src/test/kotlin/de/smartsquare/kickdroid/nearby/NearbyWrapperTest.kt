@@ -78,6 +78,27 @@ class NearbyWrapperTest {
             Message(resourceText("idle.json").toByteArray(), "IDLE")
         )
 
+        internalNearbyClientListener.captured.onLost(
+            Message(resourceText("idle.json").toByteArray(), "IDLE")
+        )
+
+        observable
+            .assertValue { it is NearbyMessage.Idle && it.raspberryId == 123L }
+            .assertNotComplete()
+    }
+
+    @Test
+    fun `receiving lost messages`() {
+        val observable = nearbyWrapper.lostMessages().test()
+
+        internalNearbyClientListener.captured.onFound(
+            Message(resourceText("idle.json").toByteArray(), "IDLE")
+        )
+
+        internalNearbyClientListener.captured.onLost(
+            Message(resourceText("idle.json").toByteArray(), "IDLE")
+        )
+
         observable
             .assertValue { it is NearbyMessage.Idle && it.raspberryId == 123L }
             .assertNotComplete()
