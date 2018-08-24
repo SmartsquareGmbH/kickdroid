@@ -22,6 +22,7 @@ buildscript {
         materialDesignVersion = "1.0.0-rc01"
 
         rxJavaVersion = "2.2.1"
+        rxAndroidVersion = "2.1.0"
         rxBindingVersion = "2.1.1"
         autodisposeVersion = "1.0.0-RC2"
         kOptionalVersion = "1.6.0"
@@ -153,6 +154,7 @@ dependencies {
     implementation "org.koin:koin-android-architecture:$koinVersion"
 
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion"
     implementation "com.uber.autodispose:autodispose-ktx:$autodisposeVersion"
     implementation "com.uber.autodispose:autodispose-android-archcomponents-ktx:$autodisposeVersion"
