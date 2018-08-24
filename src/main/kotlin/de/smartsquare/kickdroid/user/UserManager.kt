@@ -11,8 +11,8 @@ import io.reactivex.Observable
 class UserManager(private val preferences: SharedPreferences) {
 
     private companion object {
-        private const val NAME_KEY = "user_name"
         private const val ID_KEY = "user_id"
+        private const val NAME_KEY = "user_name"
     }
 
     var user: User?

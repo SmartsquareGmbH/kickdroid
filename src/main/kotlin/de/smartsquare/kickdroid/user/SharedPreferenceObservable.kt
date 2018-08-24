@@ -3,12 +3,14 @@ package de.smartsquare.kickdroid.user
 import android.content.SharedPreferences
 import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.android.MainThreadDisposable
+import io.reactivex.disposables.Disposable
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @author Ruben Gees
  */
-class SharedPreferenceObservable(private val preferences: SharedPreferences) : Observable<String>() {
+class SharedPreferenceObservable(private val preferences: SharedPreferences) :
+    Observable<String>() {
 
     override fun subscribeActual(observer: Observer<in String>) {
         val listener = Listener(preferences, observer)
@@ -20,7 +22,9 @@ class SharedPreferenceObservable(private val preferences: SharedPreferences) : O
     private class Listener(
         private val preferences: SharedPreferences,
         private val observer: Observer<in String>
-    ) : MainThreadDisposable(), SharedPreferences.OnSharedPreferenceChangeListener {
+    ) : SharedPreferences.OnSharedPreferenceChangeListener, Disposable {
+
+        private val unsubscribed = AtomicBoolean()
 
         override fun onSharedPreferenceChanged(preferences: SharedPreferences, key: String) {
             if (!isDisposed) {
@@ -28,8 +32,14 @@ class SharedPreferenceObservable(private val preferences: SharedPreferences) : O
             }
         }
 
-        override fun onDispose() {
-            preferences.unregisterOnSharedPreferenceChangeListener(this)
+        override fun isDisposed(): Boolean {
+            return unsubscribed.get()
+        }
+
+        override fun dispose() {
+            if (unsubscribed.compareAndSet(false, true)) {
+                preferences.unregisterOnSharedPreferenceChangeListener(this)
+            }
         }
     }
 }
