@@ -11,8 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * @author Ruben Gees
  */
-class NearbyMessageObservable(private val internalClient: MessagesClient) :
-    Observable<NearbyEvent>() {
+class NearbyMessageObservable(private val internalClient: MessagesClient) : Observable<NearbyEvent>() {
 
     override fun subscribeActual(observer: Observer<in NearbyEvent>) {
         val listener = Listener(internalClient, observer)

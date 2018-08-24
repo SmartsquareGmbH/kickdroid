@@ -9,8 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * @author Ruben Gees
  */
-class SharedPreferenceObservable(private val preferences: SharedPreferences) :
-    Observable<String>() {
+class SharedPreferenceObservable(private val preferences: SharedPreferences) : Observable<String>() {
 
     override fun subscribeActual(observer: Observer<in String>) {
         val listener = Listener(preferences, observer)
