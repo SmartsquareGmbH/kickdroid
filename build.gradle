@@ -109,7 +109,7 @@ android {
     }
 
     buildTypes {
-        boolean shouldSign = shouldSign()
+        boolean shouldSign = shouldSign()&& !isCI()
 
         if (!shouldSign) {
             logger.warn("This build will not be signed because it is missing the keystore info. Please add " +
@@ -234,6 +234,10 @@ afterEvaluate {
 }
 
 static String getFromSecrets(String key) {
+    if (isCI()) {
+        return 'dummy'
+    }
+
     Properties result = new Properties()
 
     try {
@@ -261,4 +265,10 @@ static boolean shouldSign() {
 
     return result.containsKey("RELEASE_STORE_FILE") && result.containsKey("RELEASE_STORE_PASSWORD") &&
             result.containsKey("RELEASE_KEY_ALIAS") && result.containsKey("RELEASE_KEY_PASSWORD")
+}
+
+static boolean isCI() {
+    Object isCI = System.getenv('CI')
+
+    return isCI != null && isCI.toBoolean()
 }
