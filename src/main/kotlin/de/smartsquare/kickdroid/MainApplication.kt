@@ -27,8 +27,6 @@ class MainApplication : Application() {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { AndroidSchedulers.from(Looper.getMainLooper(), true) }
         RxAndroidPlugins.setMainThreadSchedulerHandler { AndroidSchedulers.from(Looper.getMainLooper(), true) }
 
-        startKoin(
-            this, listOf(moshi, nearby, user)
-        )
+        startKoin(this, modules)
     }
 }

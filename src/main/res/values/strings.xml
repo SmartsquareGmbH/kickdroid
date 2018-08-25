@@ -16,5 +16,12 @@
     <string name="user_set_action">Festlegen</string>
     <string name="user_cancel_action">Abbrechen</string>
     <string name="user_name_hint">Name</string>
-    <string name="user_empty_error">Bitte gib etwas ein</string>
+    <string name="user_error_empty">Bitte gib etwas ein</string>
+    <string name="user_error_conflict">Dieser Name ist bereits vergeben</string>
+
+    <string name="error_client">Die App hat fehlerhafte Daten gesendet. Bitte melde das an die Entwickler</string>
+    <string name="error_server">Der Server hat einen Fehler gemeldet. Bitte melde das an die Entwickler</string>
+    <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>
+    <string name="error_timeout">Der Server hat nicht rechtzeitig geantwortet. Überprüfe deine Internetverbindung</string>
+    <string name="error_io">Ein Fehler bei der Datenübertragung ist aufgetreten. Überprüfe deine Internetverbindung</string>
 </resources>

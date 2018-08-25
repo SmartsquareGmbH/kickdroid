@@ -21,14 +21,11 @@ class NearbyWrapperTest {
     private val moshi = Moshi.Builder().build()
     private val internalNearbyClientListener = slot<MessageListener>()
 
-    private lateinit var nearbyClient: MessagesClient
-    private lateinit var nearbyWrapper: NearbyWrapper
+    private val nearbyClient = mockk<MessagesClient>()
+    private val nearbyWrapper = NearbyWrapper(nearbyClient, moshi)
 
     @BeforeEach
     fun setUp() {
-        nearbyClient = mockk()
-        nearbyWrapper = NearbyWrapper(nearbyClient, moshi)
-
         every { nearbyClient.publish(any()) } returns mockk()
         every { nearbyClient.unpublish(any()) } returns mockk()
         every { nearbyClient.subscribe(capture(internalNearbyClientListener)) } returns mockk()

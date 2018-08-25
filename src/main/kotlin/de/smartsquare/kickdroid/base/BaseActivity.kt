@@ -1,14 +1,12 @@
-package de.smartsquare.kickdroid
+package de.smartsquare.kickdroid.base
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import kotterknife.KotterKnife
 
 /**
  * @author Ruben Gees
  */
-@SuppressLint("Registered")
-open class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         KotterKnife.reset(this)

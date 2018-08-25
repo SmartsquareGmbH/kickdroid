@@ -20,16 +20,12 @@ class UserManagerTest {
 
     private val preferenceListener = slot<SharedPreferences.OnSharedPreferenceChangeListener>()
 
-    private lateinit var preferences: SharedPreferences
-    private lateinit var preferencesEditor: SharedPreferences.Editor
-    private lateinit var userManager: UserManager
+    private val preferences = mockk<SharedPreferences>()
+    private val preferencesEditor = mockk<SharedPreferences.Editor>()
+    private val userManager = UserManager(preferences)
 
     @BeforeEach
     fun setUp() {
-        preferences = mockk()
-        preferencesEditor = mockk()
-        userManager = UserManager(preferences)
-
         every { preferences.edit() } returns preferencesEditor
         every { preferences.getString("user_id", null) } returns "123"
         every { preferences.getString("user_name", null) } returns "test"

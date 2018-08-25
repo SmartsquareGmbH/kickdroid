@@ -7,6 +7,8 @@ buildscript {
         kotlinVersion = "1.2.61"
         playServicesVersion = "15.0.1"
 
+        lifecycleVersion = "2.0.0-beta01"
+
         androidGradlePluginVersion = "3.3.0-alpha07"
         gradleVersionsPluginVersion = "0.20.0"
         junitPluginVersion = "1.2.0.0"
@@ -28,10 +30,12 @@ buildscript {
         kOptionalVersion = "1.6.0"
 
         koinVersion = "0.9.3"
+        kotterknifeVersion = "2.0"
 
         moshiVersion = "1.6.0"
         iconicsVersion = "3.0.4"
-        kotterknifeVersion = "2.0"
+        retrofitVersion = "2.4.0"
+        materialProgressbarVersion = "1.4.2"
         communityMaterialTypefaceVersion = "2.0.46.1"
 
         junitVersion = "5.2.0"
@@ -109,8 +113,12 @@ android {
 
         if (!shouldSign) {
             logger.warn("This build will not be signed because it is missing the keystore info. Please add " +
-                    "values for 'RELEASE_STORE_FILE', #RELEASE_STORE_PASSWORD', 'RELEASE_KEY_ALIAS' and " +
-                    "'RELEASE_KEY_PASSWORD' to your secrets.properties file if you want the apk to be signed.")
+                    "values for \"RELEASE_STORE_FILE\", \"RELEASE_STORE_PASSWORD\", \"RELEASE_KEY_ALIAS\" and " +
+                    "\"RELEASE_KEY_PASSWORD\" to your secrets.properties file if you want the apk to be signed.")
+        }
+        
+        debug {
+            buildConfigField "String", "KICKWAY_URL", "\"${getFromSecrets("KICKWAY_URL")}\""
         }
 
         release {
@@ -121,6 +129,8 @@ android {
                 optimizeCode true
                 proguardFiles "config/proguard-rules.pro"
             }
+
+            buildConfigField "String", "KICKWAY_URL", "\"${getFromSecrets("KICKWAY_URL")}\""
 
             if (shouldSign) {
                 signingConfig signingConfigs.release
@@ -149,25 +159,35 @@ dependencies {
 
     implementation "com.google.android.gms:play-services-nearby:$playServicesVersion"
 
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
+
     implementation "org.koin:koin-core:$koinVersion"
     implementation "org.koin:koin-android:$koinVersion"
     implementation "org.koin:koin-android-architecture:$koinVersion"
+    implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
 
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
-    implementation "com.jakewharton.rxbinding2:rxbinding:$rxBindingVersion"
+    implementation "com.jakewharton.rxbinding2:rxbinding-kotlin:$rxBindingVersion"
     implementation "com.uber.autodispose:autodispose-ktx:$autodisposeVersion"
     implementation "com.uber.autodispose:autodispose-android-archcomponents-ktx:$autodisposeVersion"
     implementation "com.gojuno.koptional:koptional-rxjava2-extensions:$kOptionalVersion"
 
     implementation "com.squareup.moshi:moshi:$moshiVersion"
-    implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+
     implementation "com.mikepenz:iconics-core:$iconicsVersion@aar"
     implementation "com.mikepenz:iconics-views:$iconicsVersion@aar"
     implementation "com.mikepenz:community-material-typeface:$communityMaterialTypefaceVersion@aar"
+    implementation "me.zhanghai.android.materialprogressbar:library:$materialProgressbarVersion"
+
+    testImplementation "android.arch.core:core-testing:$lifecycleVersion"
 
     testImplementation "com.gregwoodfill.assert:kotlin-json-assert:$kotlinJsonAssertVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
     testImplementation "org.amshove.kluent:kluent-android:$kluentVersion"
     testImplementation "org.koin:koin-test:$koinVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
@@ -207,6 +227,10 @@ junitJacoco {
 
 wrapper {
     gradleVersion = project.ext.gradleVersion
+}
+
+afterEvaluate {
+    check.dependsOn detektCheck
 }
 
 static String getFromSecrets(String key) {

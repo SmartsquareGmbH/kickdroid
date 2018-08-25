@@ -16,3 +16,5 @@ style:
   ForbiddenComment:
     active: true
     values: 'FIXME:,STOPSHIP:'
+  MagicNumber:
+    active: false

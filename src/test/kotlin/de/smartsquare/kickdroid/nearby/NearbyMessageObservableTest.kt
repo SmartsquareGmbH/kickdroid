@@ -16,14 +16,11 @@ import org.junit.jupiter.api.Test
  */
 class NearbyMessageObservableTest {
 
+    private val nearbyClient = mockk<MessagesClient>()
     private val internalNearbyClientListener = slot<MessageListener>()
-
-    private lateinit var nearbyClient: MessagesClient
 
     @BeforeEach
     fun setUp() {
-        nearbyClient = mockk()
-
         every { nearbyClient.subscribe(capture(internalNearbyClientListener)) } returns mockk()
         every { nearbyClient.unsubscribe(any<MessageListener>()) } returns mockk()
     }

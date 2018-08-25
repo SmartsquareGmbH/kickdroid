@@ -16,13 +16,10 @@ import org.junit.jupiter.api.Test
 class SharedPreferenceObservableTest {
 
     private val preferenceListener = slot<SharedPreferences.OnSharedPreferenceChangeListener>()
-
-    lateinit var preferences: SharedPreferences
+    private val preferences = mockk<SharedPreferences>()
 
     @BeforeEach
     fun setUp() {
-        preferences = mockk()
-
         every { preferences.registerOnSharedPreferenceChangeListener(capture(preferenceListener)) } just Runs
         every { preferences.unregisterOnSharedPreferenceChangeListener(any()) } just Runs
     }

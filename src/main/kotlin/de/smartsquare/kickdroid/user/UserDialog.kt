@@ -1,26 +1,35 @@
 package de.smartsquare.kickdroid.user
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import com.google.android.material.textfield.TextInputLayout
+import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.editorActionEvents
+import com.jakewharton.rxbinding2.widget.textChanges
+import com.uber.autodispose.android.lifecycle.scope
+import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.R
+import de.smartsquare.kickdroid.base.BaseDialog
+import de.smartsquare.kickdroid.inputMethodManager
 import kotterknife.bindView
+import org.koin.android.architecture.ext.viewModel
 import org.koin.android.ext.android.inject
 import java.util.UUID
 
 /**
  * @author Ruben Gees
  */
-class UserDialog : DialogFragment() {
+class UserDialog : BaseDialog() {
 
     companion object {
         private const val TAG = "user_dialog"
@@ -31,49 +40,88 @@ class UserDialog : DialogFragment() {
     }
 
     private val userManager by inject<UserManager>()
+    private val viewModel by viewModel<UserDialogViewModel>()
 
+    private val contentContainer by bindView<ViewGroup>(R.id.contentContainer)
     private val nameInputContainer by bindView<TextInputLayout>(R.id.nameInputContainer)
     private val nameInput by bindView<EditText>(R.id.nameInput)
+    private val errorText by bindView<TextView>(R.id.errorText)
+    private val progress by bindView<ProgressBar>(R.id.progress)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = View.inflate(context, R.layout.dialog_user, null)
 
-        val result = AlertDialog.Builder(requireContext())
+        return AlertDialog.Builder(requireContext())
             .setTitle(R.string.user_name_title)
             .setView(view)
             .setPositiveButton(R.string.user_set_action, null)
             .setNegativeButton(R.string.user_cancel_action, null)
             .create()
+            .apply {
+                setOnShowListener {
+                    if (savedInstanceState == null) {
+                        nameInput.setText(userManager.user?.name ?: "")
+                        nameInput.setSelection(nameInput.text.length)
+                    }
 
-        result.setOnShowListener {
-            result.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-                val name = nameInput.text.toString().trim()
+                    nameInput.requestFocus()
 
-                if (name.isEmpty()) {
-                    setError(getString(R.string.user_empty_error))
-                } else {
-                    val id = UUID.randomUUID().toString()
-
-                    userManager.user = userManager.user?.copy(name = name) ?: User(id, name)
-
-                    dismiss()
+                    requireContext().inputMethodManager.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
                 }
             }
+    }
 
-            nameInput.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(text: Editable?) = Unit
-                override fun beforeTextChanged(text: CharSequence?, start: Int, count: Int, after: Int) = Unit
-                override fun onTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) = setError(null)
-            })
+    override fun onStart() {
+        super.onStart()
 
-            nameInput.setText(userManager.user?.name ?: "")
-            nameInput.requestFocus()
+        viewModel.authorizationSuccess.observe(this, Observer {
+            if (it != null) dismiss()
+        })
 
-            (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
-                ?.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
+        viewModel.authorizationError.observe(this, Observer {
+            if (it != null) {
+                errorText.visibility = View.VISIBLE
+                errorText.text = getString(UserErrorHandler.handle(it))
+            } else {
+                errorText.visibility = View.GONE
+            }
+        })
+
+        viewModel.authorizationLoading.observe(this, Observer {
+            if (it != null) {
+                contentContainer.visibility = View.INVISIBLE
+                progress.visibility = View.VISIBLE
+            } else {
+                contentContainer.visibility = View.VISIBLE
+                progress.visibility = View.INVISIBLE
+            }
+        })
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).clicks()
+            .autoDisposable(this.scope())
+            .subscribe { authorize() }
+
+        nameInput.textChanges()
+            .autoDisposable(this.scope())
+            .subscribe { setError(null) }
+
+        nameInput.editorActionEvents()
+            .filter { it.actionId() == EditorInfo.IME_ACTION_GO }
+            .autoDisposable(this.scope())
+            .subscribe { authorize() }
+    }
+
+    private fun authorize() {
+        val name = nameInput.text.toString().trim()
+
+        if (name.isBlank()) {
+            setError(getString(R.string.user_error_empty))
+        } else {
+            val id = UUID.randomUUID().toString()
+            val user = userManager.user?.copy(name = name) ?: User(id, name)
+
+            viewModel.authorize(user)
         }
-
-        return result
     }
 
     private fun setError(message: String?) {
