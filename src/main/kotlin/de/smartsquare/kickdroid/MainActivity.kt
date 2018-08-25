@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import com.mikepenz.iconics.view.IconicsImageView
-import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider
+import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.base.BaseActivity
 import de.smartsquare.kickdroid.nearby.NearbyWrapper
@@ -38,11 +38,15 @@ class MainActivity : BaseActivity() {
         setupUI(userManager.user)
 
         userManager.userChanges()
-            .autoDisposable(AndroidLifecycleScopeProvider.from(this))
+            .autoDisposable(this.scope())
             .subscribe { setupUI(it.toNullable()) }
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         nearbyClient.foundMessages()
-            .autoDisposable(AndroidLifecycleScopeProvider.from(this))
+            .autoDisposable(this.scope())
             .subscribe {
                 // TODO: Show Player matchup screen
             }
