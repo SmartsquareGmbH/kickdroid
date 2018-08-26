@@ -2,6 +2,7 @@ package de.smartsquare.kickdroid
 
 import android.app.Application
 import android.os.Looper
+import com.kirillr.strictmodehelper.StrictModeCompat
 import com.mikepenz.community_material_typeface_library.CommunityMaterial
 import com.mikepenz.iconics.Iconics
 import com.squareup.leakcanary.LeakCanary
@@ -20,6 +21,20 @@ class MainApplication : Application() {
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return
+        }
+
+        if (BuildConfig.DEBUG) {
+            val threadPolicy = StrictModeCompat.ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build()
+
+            val vmPolicy = StrictModeCompat.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build()
+
+            StrictModeCompat.setPolicies(threadPolicy, vmPolicy)
         }
 
         LeakCanary.install(this)

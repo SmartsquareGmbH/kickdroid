@@ -33,10 +33,13 @@ buildscript {
         kotterknifeVersion = "2.0"
 
         moshiVersion = "1.6.0"
-        iconicsVersion = "3.0.4"
         retrofitVersion = "2.4.0"
+
+        iconicsVersion = "3.0.4"
         materialProgressbarVersion = "1.4.2"
         communityMaterialTypefaceVersion = "2.0.46.1"
+
+        strictModeCompatVersion = "0b97c52b72"
 
         junitVersion = "5.2.0"
         kluentVersion = "1.41"
@@ -182,6 +185,8 @@ dependencies {
     implementation "com.mikepenz:iconics-views:$iconicsVersion@aar"
     implementation "com.mikepenz:community-material-typeface:$communityMaterialTypefaceVersion@aar"
     implementation "me.zhanghai.android.materialprogressbar:library:$materialProgressbarVersion"
+
+    implementation "com.github.kirich1409:StrictModeCompat:$strictModeCompatVersion"
 
     testImplementation "android.arch.core:core-testing:$lifecycleVersion"
 
