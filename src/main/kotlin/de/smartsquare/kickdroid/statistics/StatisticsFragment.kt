@@ -46,8 +46,8 @@ class StatisticsFragment : BaseFragment() {
     private val listAdapter = PlayerAdapter()
 
     private val content by bindView<ViewGroup>(R.id.content)
-    private val empty by bindView<ViewGroup>(R.id.empty)
-    private val error by bindView<ViewGroup>(R.id.error)
+    private val empty by bindView<View>(R.id.empty)
+    private val error by bindView<View>(R.id.error)
     private val loading by bindView<LoadingIndicator>(R.id.loading)
 
     private val first by bindView<ViewGroup>(R.id.first)
@@ -127,17 +127,9 @@ class StatisticsFragment : BaseFragment() {
 
                 error.visibility = View.GONE
 
-                it.getOrNull(0).also { player ->
-                    bindTopThreePlayer(player, second, secondName, secondWins, secondGoals)
-                }
-
-                it.getOrNull(1).also { player ->
-                    bindTopThreePlayer(player, first, firstName, firstWins, firstGoals)
-                }
-
-                it.getOrNull(2).also { player ->
-                    bindTopThreePlayer(player, third, thirdName, thirdWins, thirdGoals)
-                }
+                bindTopThreePlayer(it.getOrNull(0), second, secondName, secondWins, secondGoals)
+                bindTopThreePlayer(it.getOrNull(0), first, firstName, firstWins, firstGoals)
+                bindTopThreePlayer(it.getOrNull(0), third, thirdName, thirdWins, thirdGoals)
 
                 listAdapter.items = it.drop(3)
             }

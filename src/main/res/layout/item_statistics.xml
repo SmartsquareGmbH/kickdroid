@@ -6,7 +6,8 @@
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
     android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingBottom="8dp"
+    tools:ignore="Overdraw">
 
     <TextView
         android:id="@+id/ranking"
