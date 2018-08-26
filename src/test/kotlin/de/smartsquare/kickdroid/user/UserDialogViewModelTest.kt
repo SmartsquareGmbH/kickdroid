@@ -3,10 +3,10 @@ package de.smartsquare.kickdroid.user
 import android.content.SharedPreferences
 import androidx.lifecycle.Observer
 import de.smartsquare.InstantTaskExecutorExtension
+import de.smartsquare.KoinExtension
 import de.smartsquare.RxJavaExtension
-import de.smartsquare.kickdroid.KickwayApi
-import de.smartsquare.kickdroid.KoinExtension
-import de.smartsquare.kickdroid.modules
+import de.smartsquare.kickdroid.base.modules
+import de.smartsquare.kickdroid.kickway.KickwayApi
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

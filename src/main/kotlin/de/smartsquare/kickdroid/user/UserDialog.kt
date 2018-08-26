@@ -20,7 +20,7 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.R
 import de.smartsquare.kickdroid.base.BaseDialog
-import de.smartsquare.kickdroid.inputMethodManager
+import de.smartsquare.kickdroid.base.inputMethodManager
 import kotterknife.bindView
 import org.koin.android.architecture.ext.viewModel
 import org.koin.android.ext.android.inject

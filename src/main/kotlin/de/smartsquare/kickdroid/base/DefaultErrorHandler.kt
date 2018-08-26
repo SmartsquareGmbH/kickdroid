@@ -1,4 +1,4 @@
-package de.smartsquare.kickdroid.error
+package de.smartsquare.kickdroid.base
 
 import androidx.annotation.StringRes
 import de.smartsquare.kickdroid.R

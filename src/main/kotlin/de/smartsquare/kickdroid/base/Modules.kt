@@ -1,10 +1,11 @@
-package de.smartsquare.kickdroid
+package de.smartsquare.kickdroid.base
 
 import android.app.Activity
 import android.preference.PreferenceManager
 import com.google.android.gms.nearby.Nearby
 import com.squareup.moshi.Moshi
 import de.smartsquare.kickdroid.BuildConfig.KICKWAY_URL
+import de.smartsquare.kickdroid.kickway.KickwayApi
 import de.smartsquare.kickdroid.nearby.NearbyWrapper
 import de.smartsquare.kickdroid.user.UserDialogViewModel
 import de.smartsquare.kickdroid.user.UserManager
@@ -43,6 +44,10 @@ private val user = applicationContext {
     viewModel { UserDialogViewModel(get(), get()) }
 }
 
-val modules = listOf(network, nearby, user)
+val modules = listOf(
+    network,
+    nearby,
+    user
+)
 
 inline fun <reified T> Activity.activityInject(): Lazy<T> = inject(parameters = { mapOf(ACTIVITY_PARAMETER to this) })

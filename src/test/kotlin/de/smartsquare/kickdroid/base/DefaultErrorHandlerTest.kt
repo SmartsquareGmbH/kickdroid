@@ -1,4 +1,4 @@
-package de.smartsquare.kickdroid.error
+package de.smartsquare.kickdroid.base
 
 import de.smartsquare.kickdroid.R
 import io.mockk.mockk

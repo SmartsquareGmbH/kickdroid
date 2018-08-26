@@ -1,4 +1,4 @@
-package de.smartsquare.kickdroid
+package de.smartsquare.kickdroid.base
 
 import android.content.Context
 import android.view.inputmethod.InputMethodManager

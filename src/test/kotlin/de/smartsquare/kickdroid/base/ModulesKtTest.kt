@@ -1,8 +1,9 @@
-package de.smartsquare.kickdroid
+package de.smartsquare.kickdroid.base
 
 import android.app.Activity
 import android.content.SharedPreferences
 import com.google.android.gms.nearby.messages.MessagesClient
+import de.smartsquare.KoinExtension
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

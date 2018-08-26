@@ -1,4 +1,4 @@
-package de.smartsquare.kickdroid
+package de.smartsquare.kickdroid.kickway
 
 import de.smartsquare.kickdroid.user.User
 import io.reactivex.Completable

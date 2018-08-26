@@ -2,7 +2,7 @@ package de.smartsquare.kickdroid.user
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import de.smartsquare.kickdroid.KickwayApi
+import de.smartsquare.kickdroid.kickway.KickwayApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 

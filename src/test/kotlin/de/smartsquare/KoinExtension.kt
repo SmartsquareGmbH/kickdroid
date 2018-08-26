@@ -1,4 +1,4 @@
-package de.smartsquare.kickdroid
+package de.smartsquare
 
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext

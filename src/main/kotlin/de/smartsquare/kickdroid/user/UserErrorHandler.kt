@@ -1,7 +1,7 @@
 package de.smartsquare.kickdroid.user
 
 import de.smartsquare.kickdroid.R
-import de.smartsquare.kickdroid.error.DefaultErrorHandler
+import de.smartsquare.kickdroid.base.DefaultErrorHandler
 import retrofit2.HttpException
 
 /**

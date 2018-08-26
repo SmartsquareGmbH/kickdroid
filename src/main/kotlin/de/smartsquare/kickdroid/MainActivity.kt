@@ -7,6 +7,7 @@ import com.mikepenz.iconics.view.IconicsImageView
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.base.BaseActivity
+import de.smartsquare.kickdroid.base.activityInject
 import de.smartsquare.kickdroid.nearby.NearbyWrapper
 import de.smartsquare.kickdroid.user.User
 import de.smartsquare.kickdroid.user.UserDialog
