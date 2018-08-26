@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import de.smartsquare.kickdroid.BuildConfig.KICKWAY_URL
 import de.smartsquare.kickdroid.kickway.KickwayApi
 import de.smartsquare.kickdroid.nearby.NearbyWrapper
+import de.smartsquare.kickdroid.statistics.StatisticsViewModel
 import de.smartsquare.kickdroid.user.UserDialogViewModel
 import de.smartsquare.kickdroid.user.UserManager
 import org.koin.android.architecture.ext.viewModel
@@ -44,10 +45,15 @@ private val user = applicationContext {
     viewModel { UserDialogViewModel(get(), get()) }
 }
 
+private val statistics = applicationContext {
+    viewModel { StatisticsViewModel(get()) }
+}
+
 val modules = listOf(
     network,
     nearby,
-    user
+    user,
+    statistics
 )
 
 inline fun <reified T> Activity.activityInject(): Lazy<T> = inject(parameters = { mapOf(ACTIVITY_PARAMETER to this) })

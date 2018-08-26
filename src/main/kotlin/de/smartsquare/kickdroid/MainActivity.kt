@@ -3,12 +3,14 @@ package de.smartsquare.kickdroid
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.mikepenz.iconics.view.IconicsImageView
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.base.BaseActivity
 import de.smartsquare.kickdroid.base.activityInject
 import de.smartsquare.kickdroid.nearby.NearbyWrapper
+import de.smartsquare.kickdroid.statistics.StatisticsActivity
 import de.smartsquare.kickdroid.user.User
 import de.smartsquare.kickdroid.user.UserDialog
 import de.smartsquare.kickdroid.user.UserManager
@@ -19,6 +21,8 @@ import org.koin.android.ext.android.inject
  * @author Ruben Gees
  */
 class MainActivity : BaseActivity() {
+
+    private val toolbar by bindView<Toolbar>(R.id.toolbar)
 
     private val headline by bindView<TextView>(R.id.headline)
     private val subhead by bindView<TextView>(R.id.subhead)
@@ -36,6 +40,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
         setupUI(userManager.user)
 
         userManager.userChanges()
@@ -81,7 +86,7 @@ class MainActivity : BaseActivity() {
         subhead.setOnClickListener { UserDialog.show(this) }
 
         bestPlayersButton.setOnClickListener {
-            // TODO
+            StatisticsActivity.navigateTo(this)
         }
     }
 }

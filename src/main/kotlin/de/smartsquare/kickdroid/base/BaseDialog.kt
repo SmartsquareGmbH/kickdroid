@@ -7,7 +7,6 @@ import kotterknife.KotterKnife
 /**
  * @author Ruben Gees
  */
-@Suppress("UnnecessaryAbstractClass")
 abstract class BaseDialog : DialogFragment() {
 
     val alertDialog get() = dialog as? AlertDialog ?: throw IllegalStateException("dialog is not initialized yet")

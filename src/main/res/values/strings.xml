@@ -4,7 +4,7 @@
     <string name="main_welcome">Willkommen bei Kickdroid!</string>
     <string name="main_welcome_back">Willkommen zurück, %s</string>
     <string name="main_status_no_games">Noch keine Matches gespielt</string>
-    <string name="main_set_name">Lege deinen Namen fest, indem du hier tippst.</string>
+    <string name="main_set_name">Lege deinen Namen fest, indem du hier tippst</string>
 
     <string name="main_start_match">Match starten</string>
     <string name="main_best_players">Beste Spieler</string>
@@ -18,6 +18,24 @@
     <string name="user_name_hint">Name</string>
     <string name="user_error_empty">Bitte gib etwas ein</string>
     <string name="user_error_conflict">Dieser Name ist bereits vergeben</string>
+
+    <string name="statistics_title">Beste Spieler</string>
+    <string name="statistics_solo_title">Solo</string>
+    <string name="statistics_duo_title">Duo</string>
+    <string name="statistics_flex_title">Flex</string>
+    <string name="statistics_empty">In dieser Kategorie wurden noch keine Matches ausgetragen</string>
+
+    <plurals name="statistics_wins">
+        <item quantity="one">%d Sieg</item>
+        <item quantity="other">%d Siege</item>
+    </plurals>
+
+    <plurals name="statistics_goals">
+        <item quantity="one">%d Tor</item>
+        <item quantity="other">%d Tore</item>
+    </plurals>
+
+    <string name="view_error_retry">Erneut versuchen</string>
 
     <string name="error_client">Die App hat fehlerhafte Daten gesendet. Bitte melde das an die Entwickler</string>
     <string name="error_server">Der Server hat einen Fehler gemeldet. Bitte melde das an die Entwickler</string>

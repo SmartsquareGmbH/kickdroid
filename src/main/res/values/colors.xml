@@ -7,4 +7,8 @@
     <color name="icon">#9E9E9E</color>
 
     <color name="ic_launcher_background">#506795</color>
+
+    <color name="gold">#FBC02D</color>
+    <color name="silver">#BDBDBD</color>
+    <color name="bronze">#BF360C</color>
 </resources>
