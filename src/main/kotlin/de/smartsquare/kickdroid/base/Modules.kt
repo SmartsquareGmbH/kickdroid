@@ -6,7 +6,7 @@ import com.google.android.gms.nearby.Nearby
 import com.squareup.moshi.Moshi
 import de.smartsquare.kickdroid.BuildConfig.KICKWAY_URL
 import de.smartsquare.kickdroid.kickway.KickwayApi
-import de.smartsquare.kickdroid.nearby.NearbyWrapper
+import de.smartsquare.kickdroid.nearby.NearbyManager
 import de.smartsquare.kickdroid.statistics.StatisticsViewModel
 import de.smartsquare.kickdroid.user.UserDialogViewModel
 import de.smartsquare.kickdroid.user.UserManager
@@ -35,8 +35,8 @@ private val network = applicationContext {
 }
 
 private val nearby = applicationContext {
-    factory { params -> Nearby.getMessagesClient(params[ACTIVITY_PARAMETER]) }
-    factory { params -> NearbyWrapper(get(parameters = { params.values }), get()) }
+    factory { params -> Nearby.getConnectionsClient(params[ACTIVITY_PARAMETER]) }
+    factory { params -> NearbyManager(get(parameters = { params.values }), get(), "de.smartsquare.kickdroid") }
 }
 
 private val user = applicationContext {
