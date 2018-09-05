@@ -19,7 +19,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.koin.android.ext.koin.with
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
@@ -35,10 +35,10 @@ class UserDialogViewModelTest : KoinTest {
     private val viewModel by inject<UserDialogViewModel>()
     private val userManager by inject<UserManager>()
 
-    private val testModules = modules + applicationContext {
-        bean { api }
-        bean { mockk<SharedPreferences>() }
-        bean { mockk<UserManager>() }
+    private val testModules = modules + module {
+        single(override = true) { api }
+        single(override = true) { mockk<SharedPreferences>() }
+        single(override = true) { mockk<UserManager>() }
     }
 
     @BeforeEach

@@ -8,14 +8,14 @@ import com.mikepenz.iconics.view.IconicsImageView
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.base.BaseActivity
-import de.smartsquare.kickdroid.base.activityInject
-import de.smartsquare.kickdroid.nearby.NearbyWrapper
 import de.smartsquare.kickdroid.statistics.StatisticsActivity
 import de.smartsquare.kickdroid.user.User
 import de.smartsquare.kickdroid.user.UserDialog
 import de.smartsquare.kickdroid.user.UserManager
+import de.smartsquare.kickprotocol.Kickprotocol
 import kotterknife.bindView
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * @author Ruben Gees
@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
     private val bestPlayersButton by bindView<View>(R.id.bestPlayersButton)
 
     private val userManager by inject<UserManager>()
-    private val nearbyClient by activityInject<NearbyWrapper>()
+    private val kickprotocol by inject<Kickprotocol> { parametersOf(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +46,6 @@ class MainActivity : BaseActivity() {
         userManager.userChanges()
             .autoDisposable(this.scope())
             .subscribe { setupUI(it.toNullable()) }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        nearbyClient.foundMessages()
-            .autoDisposable(this.scope())
-            .subscribe {
-                // TODO: Show Player matchup screen
-            }
     }
 
     private fun setupUI(user: User?) {

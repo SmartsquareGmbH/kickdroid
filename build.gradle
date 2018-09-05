@@ -2,14 +2,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     ext {
-        gradleVersion = "4.9"
+        gradleVersion = "4.10"
 
         kotlinVersion = "1.2.61"
         playServicesVersion = "15.0.1"
+        kickprotocolVersion = "9cb1f1b69d"
 
-        lifecycleVersion = "2.0.0-beta01"
+        lifecycleVersion = "2.0.0-rc01"
 
-        androidGradlePluginVersion = "3.3.0-alpha07"
+        androidGradlePluginVersion = "3.3.0-alpha08"
         gradleVersionsPluginVersion = "0.20.0"
         junitPluginVersion = "1.2.0.0"
         ktlintGradleVersion = "5.0.0"
@@ -18,9 +19,9 @@ buildscript {
         jacocoPluginVersion = "0.12.0"
         jacocoVersion = "0.8.2"
 
-        appcompatVersion = "1.0.0-rc01"
-        recyclerviewVersion = "1.0.0-rc01"
-        cardviewVersion = "1.0.0-rc01"
+        appcompatVersion = "1.0.0-rc02"
+        recyclerviewVersion = "1.0.0-rc02"
+        cardviewVersion = "1.0.0-rc02"
         materialDesignVersion = "1.0.0-rc01"
 
         rxJavaVersion = "2.2.1"
@@ -29,21 +30,21 @@ buildscript {
         autodisposeVersion = "1.0.0-RC2"
         kOptionalVersion = "1.6.0"
 
-        koinVersion = "0.9.3"
+        koinVersion = "1.0.0-RC-2"
         kotterknifeVersion = "2.0"
 
         moshiVersion = "1.6.0"
         retrofitVersion = "2.4.0"
 
-        iconicsVersion = "3.0.4"
+        iconicsVersion = "3.1.0-rc01"
         materialProgressbarVersion = "1.4.2"
         communityMaterialTypefaceVersion = "2.0.46.1"
 
         strictModeCompatVersion = "0b97c52b72"
 
-        junitVersion = "5.2.0"
+        junitVersion = "5.3.0"
         kluentVersion = "1.41"
-        mockkVersion = "1.8.6"
+        mockkVersion = "1.8.7"
         kotlinJsonAssertVersion = "0.1.0"
 
         leakCanaryVersion = "1.6.1"
@@ -112,14 +113,14 @@ android {
     }
 
     buildTypes {
-        boolean shouldSign = shouldSign()&& !isCI()
+        boolean shouldSign = shouldSign() && !isCI()
 
         if (!shouldSign) {
             logger.warn("This build will not be signed because it is missing the keystore info. Please add " +
                     "values for \"RELEASE_STORE_FILE\", \"RELEASE_STORE_PASSWORD\", \"RELEASE_KEY_ALIAS\" and " +
                     "\"RELEASE_KEY_PASSWORD\" to your secrets.properties file if you want the apk to be signed.")
         }
-        
+
         debug {
             buildConfigField "String", "KICKWAY_URL", "\"${getFromSecrets("KICKWAY_URL")}\""
         }
@@ -161,12 +162,12 @@ dependencies {
     implementation "com.google.android.material:material:$materialDesignVersion"
 
     implementation "com.google.android.gms:play-services-nearby:$playServicesVersion"
+    implementation "com.github.smartsquareGmbh:kickprotocol:$kickprotocolVersion"
 
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
 
-    implementation "org.koin:koin-core:$koinVersion"
     implementation "org.koin:koin-android:$koinVersion"
-    implementation "org.koin:koin-android-architecture:$koinVersion"
+    implementation "org.koin:koin-android-viewmodel:$koinVersion"
     implementation "com.github.rubengees:kotterknife:$kotterknifeVersion"
 
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
@@ -241,7 +242,7 @@ afterEvaluate {
 
 static String getFromSecrets(String key) {
     if (isCI()) {
-        return 'dummy'
+        return "dummy"
     }
 
     Properties result = new Properties()
@@ -274,7 +275,7 @@ static boolean shouldSign() {
 }
 
 static boolean isCI() {
-    Object isCI = System.getenv('CI')
+    Object isCI = System.getenv("CI")
 
     return isCI != null && isCI.toBoolean()
 }

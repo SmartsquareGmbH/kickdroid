@@ -1,17 +1,16 @@
 package de.smartsquare.kickdroid.base
 
-import android.app.Activity
 import android.content.SharedPreferences
-import com.google.android.gms.nearby.messages.MessagesClient
+import com.google.android.gms.nearby.connection.ConnectionsClient
 import de.smartsquare.KoinExtension
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.koin.android.ext.koin.with
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext.startKoin
 import org.koin.test.KoinTest
-import org.koin.test.dryRun
+import org.koin.test.checkModules
 
 /**
  * @author Ruben Gees
@@ -19,14 +18,14 @@ import org.koin.test.dryRun
 @ExtendWith(KoinExtension::class)
 class ModulesKtTest : KoinTest {
 
-    private val testModules = modules + applicationContext {
-        factory { mockk<MessagesClient>() }
-        bean { mockk<SharedPreferences>() }
+    private val testModules = modules + module {
+        single(override = true) { mockk<ConnectionsClient>() }
+        single(override = true) { mockk<SharedPreferences>() }
     }
 
     @Test
-    fun `koin dry run`() {
+    fun `koin check modules`() {
         startKoin(testModules) with mockk()
-        dryRun { mapOf(ACTIVITY_PARAMETER to mockk<Activity>()) }
+        checkModules(testModules)
     }
 }

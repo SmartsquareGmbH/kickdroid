@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.koin.android.ext.koin.with
-import org.koin.dsl.module.applicationContext
+import org.koin.dsl.module.module
 import org.koin.standalone.StandAloneContext
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
@@ -32,8 +32,8 @@ class StatisticsViewModelTest : KoinTest {
     private val api = mockk<KickwayApi>()
     private val viewModel by inject<StatisticsViewModel>()
 
-    private val testModules = modules + applicationContext {
-        bean { api }
+    private val testModules = modules + module {
+        single(override = true) { api }
     }
 
     @BeforeEach
