@@ -1,11 +1,11 @@
 package de.smartsquare.kickdroid.base
 
-import android.app.Activity
 import android.preference.PreferenceManager
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.squareup.moshi.Moshi
 import de.smartsquare.kickdroid.BuildConfig.KICKWAY_URL
+import de.smartsquare.kickdroid.game.GameViewModel
 import de.smartsquare.kickdroid.kickway.KickwayApi
 import de.smartsquare.kickdroid.statistics.StatisticsViewModel
 import de.smartsquare.kickdroid.user.UserDialogViewModel
@@ -33,7 +33,7 @@ private val network = module {
 }
 
 private val kickprotocol = module {
-    factory { (activity: Activity) -> Nearby.getConnectionsClient(activity) }
+    factory { Nearby.getConnectionsClient(androidContext()) }
     factory { Kickprotocol(get<ConnectionsClient>(), get()) }
 }
 
@@ -41,6 +41,10 @@ private val user = module {
     single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
     single { UserManager(get()) }
     viewModel { UserDialogViewModel(get(), get()) }
+}
+
+private val game = module {
+    viewModel { parameters -> GameViewModel(get(parameters = { parameters }), get()) }
 }
 
 private val statistics = module {
@@ -51,5 +55,6 @@ val modules = listOf(
     network,
     kickprotocol,
     user,
+    game,
     statistics
 )

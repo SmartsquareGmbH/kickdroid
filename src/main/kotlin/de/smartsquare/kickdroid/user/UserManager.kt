@@ -42,6 +42,7 @@ class UserManager(private val preferences: SharedPreferences) {
 
     fun userChanges(): Observable<Optional<User>> {
         return SharedPreferenceObservable(preferences)
-            .map { key -> (if (key == NAME_KEY || key == ID_KEY) user else null).toOptional() }
+            .filter { it == ID_KEY }
+            .map { key -> user.toOptional() }
     }
 }

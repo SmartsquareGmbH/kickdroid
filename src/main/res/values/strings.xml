@@ -5,12 +5,12 @@
     <string name="main_welcome_back">Willkommen zurück, %s</string>
     <string name="main_status_no_games">Noch keine Matches gespielt</string>
     <string name="main_set_name">Lege deinen Namen fest, indem du hier tippst</string>
-
-    <string name="main_start_match">Match starten</string>
     <string name="main_best_players">Beste Spieler</string>
 
-    <string name="main_matches_not_available">Matches noch nicht verfügbar</string>
-    <string name="main_set_name_status">Lege erst deinen Namen fest</string>
+    <string name="searching_loading">Suche nach Matches…</string>
+
+    <string name="idle_status">Ein einsatzbereiter Server wurde gefunden. Du kannst nun ein Match starten!</string>
+    <string name="idle_start">Match starten</string>
 
     <string name="user_name_title">Name festlegen</string>
     <string name="user_set_action">Festlegen</string>

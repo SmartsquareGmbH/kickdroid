@@ -76,7 +76,7 @@ class UserManagerTest {
         preferenceListener.captured.onSharedPreferenceChanged(preferences, "user_id")
         preferenceListener.captured.onSharedPreferenceChanged(preferences, "user_name")
 
-        observable.assertValueSequenceOnly(listOf(expectedUser, expectedUser))
+        observable.assertValue(expectedUser)
     }
 
     @Test

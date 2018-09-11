@@ -1,21 +1,29 @@
 package de.smartsquare.kickdroid
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import com.mikepenz.iconics.view.IconicsImageView
+import androidx.lifecycle.Observer
+import com.gojuno.koptional.rxjava2.filterSome
+import com.gojuno.koptional.toOptional
+import com.jakewharton.rxbinding2.view.clicks
+import com.tbruyelle.rxpermissions2.RxPermissions
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.base.BaseActivity
+import de.smartsquare.kickdroid.game.GameViewModel
+import de.smartsquare.kickdroid.game.IdleFragment
+import de.smartsquare.kickdroid.game.SearchingFragment
 import de.smartsquare.kickdroid.statistics.StatisticsActivity
 import de.smartsquare.kickdroid.user.User
 import de.smartsquare.kickdroid.user.UserDialog
 import de.smartsquare.kickdroid.user.UserManager
-import de.smartsquare.kickprotocol.Kickprotocol
+import io.reactivex.Observable
 import kotterknife.bindView
 import org.koin.android.ext.android.inject
-import org.koin.core.parameter.parametersOf
+import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
  * @author Ruben Gees
@@ -26,15 +34,10 @@ class MainActivity : BaseActivity() {
 
     private val headline by bindView<TextView>(R.id.headline)
     private val subhead by bindView<TextView>(R.id.subhead)
-
-    private val startMatchButton by bindView<View>(R.id.startMatchButton)
-    private val startMatchIcon by bindView<IconicsImageView>(R.id.startMatchIcon)
-    private val startMatchText by bindView<TextView>(R.id.startMatchText)
-    private val startMatchStatus by bindView<TextView>(R.id.startMatchStatus)
     private val bestPlayersButton by bindView<View>(R.id.bestPlayersButton)
 
     private val userManager by inject<UserManager>()
-    private val kickprotocol by inject<Kickprotocol> { parametersOf(this) }
+    private val viewModel by viewModel<GameViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,40 +46,63 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         setupUI(userManager.user)
 
+        RxPermissions(this)
+            .requestEachCombined(Manifest.permission.ACCESS_COARSE_LOCATION)
+            .doOnNext {
+                if (it.shouldShowRequestPermissionRationale) {
+                    // TODO
+                } else if (it.granted.not()) {
+                    // TODO
+                }
+            }
+            .filter { it.granted }
+            .flatMap {
+                Observable.merge(
+                    Observable.just(userManager.user.toOptional()),
+                    userManager.userChanges()
+                )
+            }
+            .filterSome()
+            .take(1)
+            .singleOrError()
+            .autoDisposable(this.scope())
+            .subscribe { _ -> viewModel.discover() }
+
+        Observable.merge(headline.clicks(), subhead.clicks())
+            .autoDisposable(this.scope())
+            .subscribe { UserDialog.show(this) }
+
+        bestPlayersButton.clicks()
+            .autoDisposable(this.scope())
+            .subscribe { StatisticsActivity.navigateTo(this) }
+
         userManager.userChanges()
             .autoDisposable(this.scope())
             .subscribe { setupUI(it.toNullable()) }
+
+        viewModel.state.observe(this, Observer {
+            if (it == null) throw IllegalStateException("state cannot be null")
+
+            val newFragment = when (it) {
+                GameViewModel.GameState.SEARCHING -> SearchingFragment.newInstance()
+                GameViewModel.GameState.IDLE -> IdleFragment.newInstance()
+                GameViewModel.GameState.MATCHMAKING -> TODO()
+                GameViewModel.GameState.PLAYING -> TODO()
+            }
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.gameContainer, newFragment)
+                .commitNow()
+        })
     }
 
     private fun setupUI(user: User?) {
         if (user == null) {
             headline.text = getString(R.string.main_welcome)
             subhead.text = getString(R.string.main_set_name)
-
-            startMatchIcon.icon = startMatchIcon.icon.colorRes(R.color.icon)
-            startMatchText.text = getString(R.string.main_matches_not_available)
-            startMatchStatus.visibility = View.VISIBLE
-
-            startMatchButton.setOnClickListener(null)
-            startMatchButton.isClickable = false
         } else {
             headline.text = getString(R.string.main_welcome_back, user.name)
             subhead.text = getString(R.string.main_status_no_games)
-
-            startMatchIcon.icon = startMatchIcon.icon.colorRes(R.color.colorPrimary)
-            startMatchText.text = getString(R.string.main_start_match)
-            startMatchStatus.visibility = View.GONE
-
-            startMatchButton.setOnClickListener {
-                // TODO
-            }
-        }
-
-        headline.setOnClickListener { UserDialog.show(this) }
-        subhead.setOnClickListener { UserDialog.show(this) }
-
-        bestPlayersButton.setOnClickListener {
-            StatisticsActivity.navigateTo(this)
         }
     }
 }
