@@ -16,6 +16,10 @@ import org.koin.android.ext.android.startKoin
  */
 class MainApplication : Application() {
 
+    companion object {
+        const val LOGGING_TAG = "kickdroid"
+    }
+
     override fun onCreate() {
         super.onCreate()
 

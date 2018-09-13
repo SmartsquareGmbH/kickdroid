@@ -12,6 +12,16 @@
     <string name="idle_status">Ein einsatzbereiter Server wurde gefunden. Du kannst nun ein Match starten!</string>
     <string name="idle_start">Match starten</string>
 
+    <string name="matchmaking_waiting">Warte auf Spieler…</string>
+    <string name="matchmaking_start">Match starten</string>
+    <string name="matchmaking_leave">Verlassen</string>
+    <string name="matchmaking_join">Beitreten</string>
+    <string name="matchmaking_team_left">Team links</string>
+    <string name="matchmaking_team_right">Team rechts</string>
+
+    <string name="playing_vs">vs</string>
+    <string name="playing_colon">:</string>
+
     <string name="user_name_title">Name festlegen</string>
     <string name="user_set_action">Festlegen</string>
     <string name="user_cancel_action">Abbrechen</string>
