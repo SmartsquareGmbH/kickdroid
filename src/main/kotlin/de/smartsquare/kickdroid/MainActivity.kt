@@ -15,6 +15,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.base.BaseActivity
+import de.smartsquare.kickdroid.base.DefaultErrorHandler
 import de.smartsquare.kickdroid.game.GameViewModel
 import de.smartsquare.kickdroid.game.GameViewModel.GameState
 import de.smartsquare.kickdroid.game.IdleFragment
@@ -25,7 +26,6 @@ import de.smartsquare.kickdroid.statistics.StatisticsActivity
 import de.smartsquare.kickdroid.user.User
 import de.smartsquare.kickdroid.user.UserDialog
 import de.smartsquare.kickdroid.user.UserManager
-import de.smartsquare.kickprotocol.KickprotocolDiscoveryException
 import io.reactivex.Observable
 import kotterknife.bindView
 import org.koin.android.ext.android.inject
@@ -125,10 +125,7 @@ class MainActivity : BaseActivity() {
         })
 
         viewModel.error.observe(this, Observer {
-            if (it is KickprotocolDiscoveryException) {
-                Snackbar.make(root, "Fehler bei der Suche nach Geräten", Snackbar.LENGTH_LONG)
-                    .show()
-            }
+            Snackbar.make(root, DefaultErrorHandler.handle(it), Snackbar.LENGTH_LONG).show()
         })
     }
 }

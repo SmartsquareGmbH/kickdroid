@@ -56,10 +56,12 @@ class GameViewModel(private val kickprotocol: Kickprotocol, private val userMana
                     Completable.never()
                 }
             }
-            .subscribe {
+            .subscribe({
                 state.value = GameState.SEARCHING
                 lobby.value = EMPTY_LOBBY
-            }
+            }, {
+                error.value = it
+            })
 
         disposables += kickprotocol.discoveryEvents
             .filter { it is DiscoveryEvent.Lost }
