@@ -9,7 +9,7 @@ import de.smartsquare.kickprotocol.ConnectionEvent
 import de.smartsquare.kickprotocol.DiscoveryEvent
 import de.smartsquare.kickprotocol.Kickprotocol
 import de.smartsquare.kickprotocol.Lobby
-import de.smartsquare.kickprotocol.MessageEvent
+import de.smartsquare.kickprotocol.filterErrors
 import de.smartsquare.kickprotocol.filterMessages
 import de.smartsquare.kickprotocol.message.CreateGameMessage
 import de.smartsquare.kickprotocol.message.JoinLobbyMessage
@@ -25,12 +25,17 @@ import io.reactivex.rxkotlin.subscribeBy
 /**
  * @author Ruben Gees
  */
-class GameViewModel(private val kickprotocol: Kickprotocol, private val userManager: UserManager) : ViewModel() {
+class GameViewModel(private val kickprotocol: Kickprotocol, private val userManager: UserManager) :
+    ViewModel() {
+
+    private companion object {
+        private val EMPTY_LOBBY = Lobby("", "", emptyList(), emptyList(), 0, 0)
+    }
 
     val state = MutableLiveData<GameState>().apply { value = GameState.SEARCHING }
     val isLoading = MutableLiveData<Boolean>().apply { value = false }
     val error = MutableLiveData<Throwable>()
-    val lobby = MutableLiveData<Lobby>()
+    val lobby = MutableLiveData<Lobby>().apply { value = EMPTY_LOBBY }
 
     private val user
         get() = userManager.user ?: throw IllegalStateException("user cannot be null")
@@ -53,7 +58,7 @@ class GameViewModel(private val kickprotocol: Kickprotocol, private val userMana
             }
             .subscribe {
                 state.value = GameState.SEARCHING
-                lobby.value = null
+                lobby.value = EMPTY_LOBBY
             }
 
         disposables += kickprotocol.discoveryEvents
@@ -71,26 +76,25 @@ class GameViewModel(private val kickprotocol: Kickprotocol, private val userMana
             .doOnNext { Log.d(LOGGING_TAG, "Disconnected from device: ${it.endpointId}") }
             .subscribe {
                 state.value = GameState.SEARCHING
-                lobby.value = null
+                lobby.value = EMPTY_LOBBY
             }
 
         disposables += kickprotocol.messageEvents
-            .subscribe {
-                if (it is MessageEvent.Message) {
-                    Log.d(LOGGING_TAG, "Received message: $it")
-                } else {
-                    Log.d(LOGGING_TAG, "Error receiving message: $it")
-                }
+            .filterMessages()
+            .subscribe { Log.d(LOGGING_TAG, "Received message: $it") }
 
-                isLoading.value = false
-            }
+        disposables += kickprotocol.messageEvents
+            .filterErrors()
+            .subscribe { isLoading.value = false }
 
         disposables += kickprotocol.idleMessageEvents
             .filterMessages()
+            .doOnNext { isLoading.value = false }
             .subscribe { state.value = GameState.IDLE }
 
         disposables += kickprotocol.matchmakingMessageEvents
             .filterMessages()
+            .doOnNext { isLoading.value = false }
             .subscribe {
                 state.value = GameState.MATCHMAKING
                 lobby.value = it.message.lobby
@@ -98,6 +102,7 @@ class GameViewModel(private val kickprotocol: Kickprotocol, private val userMana
 
         disposables += kickprotocol.playingMessageEvents
             .filterMessages()
+            .doOnNext { isLoading.value = false }
             .subscribe {
                 state.value = GameState.PLAYING
                 lobby.value = it.message.lobby
