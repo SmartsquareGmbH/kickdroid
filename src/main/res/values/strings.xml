@@ -3,7 +3,6 @@
 
     <string name="main_welcome">Willkommen bei Kickdroid!</string>
     <string name="main_welcome_back">Willkommen zurück, %s</string>
-    <string name="main_status_no_games">Noch keine Matches gespielt</string>
     <string name="main_set_name">Lege deinen Namen fest, indem du hier tippst</string>
     <string name="main_best_players">Beste Spieler</string>
 

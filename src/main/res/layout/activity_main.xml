@@ -20,80 +20,75 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            tools:text="Welcome to Kickdroid!" />
 
-            <TextView
-                android:id="@+id/headline"
+        <TextView
+            android:id="@+id/subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/headline"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            tools:text="Set your name by tapping here." />
+
+        <FrameLayout
+            android:id="@+id/gameContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bestPlayersButton"
+            android:layout_below="@+id/subhead"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bestPlayersButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardUseCompatPadding="true"
+            tools:ignore="UnusedAttribute">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                tools:text="Welcome to Kickdroid!" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
 
-            <TextView
-                android:id="@+id/subhead"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/headline"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginBottom="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                tools:text="Set your name by tapping here." />
+                <com.mikepenz.iconics.view.IconicsImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:padding="8dp"
+                    app:iiv_color="@color/colorPrimary"
+                    app:iiv_icon="cmd-trophy"
+                    tools:src="@mipmap/ic_launcher" />
 
-            <FrameLayout
-                android:id="@+id/gameContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/bestPlayersButton"
-                android:layout_below="@+id/subhead" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/bestPlayersButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:cardUseCompatPadding="true"
-                tools:ignore="UnusedAttribute">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    tools:ignore="UseCompoundDrawables">
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/main_best_players"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-                    <com.mikepenz.iconics.view.IconicsImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:padding="8dp"
-                        app:iiv_color="@color/colorPrimary"
-                        app:iiv_icon="cmd-trophy"
-                        tools:src="@mipmap/ic_launcher" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:text="@string/main_best_players"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-    </androidx.core.widget.NestedScrollView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

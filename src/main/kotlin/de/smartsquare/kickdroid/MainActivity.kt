@@ -16,6 +16,7 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.base.BaseActivity
 import de.smartsquare.kickdroid.game.GameViewModel
+import de.smartsquare.kickdroid.game.GameViewModel.GameState
 import de.smartsquare.kickdroid.game.IdleFragment
 import de.smartsquare.kickdroid.game.MatchmakingFragment
 import de.smartsquare.kickdroid.game.PlayingFragment
@@ -61,9 +62,10 @@ class MainActivity : BaseActivity() {
         if (user == null) {
             headline.text = getString(R.string.main_welcome)
             subhead.text = getString(R.string.main_set_name)
+            subhead.visibility = View.VISIBLE
         } else {
             headline.text = getString(R.string.main_welcome_back, user.name)
-            subhead.text = getString(R.string.main_status_no_games)
+            subhead.visibility = View.GONE
         }
     }
 
@@ -93,7 +95,7 @@ class MainActivity : BaseActivity() {
 
     private fun initListeners() {
         Observable.merge(headline.clicks(), subhead.clicks())
-            .filter { viewModel.state.value == GameViewModel.GameState.SEARCHING }
+            .filter { viewModel.state.value in arrayOf(GameState.SEARCHING, GameState.IDLE) }
             .autoDisposable(this.scope())
             .subscribe { UserDialog.show(this) }
 
@@ -111,10 +113,10 @@ class MainActivity : BaseActivity() {
             if (it == null) throw IllegalStateException("state cannot be null")
 
             val newFragment = when (it) {
-                GameViewModel.GameState.SEARCHING -> SearchingFragment.newInstance()
-                GameViewModel.GameState.IDLE -> IdleFragment.newInstance()
-                GameViewModel.GameState.MATCHMAKING -> MatchmakingFragment.newInstance()
-                GameViewModel.GameState.PLAYING -> PlayingFragment.newInstance()
+                GameState.SEARCHING -> SearchingFragment.newInstance()
+                GameState.IDLE -> IdleFragment.newInstance()
+                GameState.MATCHMAKING -> MatchmakingFragment.newInstance()
+                GameState.PLAYING -> PlayingFragment.newInstance()
             }
 
             supportFragmentManager.beginTransaction()
@@ -124,7 +126,8 @@ class MainActivity : BaseActivity() {
 
         viewModel.error.observe(this, Observer {
             if (it is KickprotocolDiscoveryException) {
-                Snackbar.make(root, "Fehler bei der Suche nach Geräten", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(root, "Fehler bei der Suche nach Geräten", Snackbar.LENGTH_LONG)
+                    .show()
             }
         })
     }
