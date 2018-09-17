@@ -26,7 +26,7 @@ class LoadingIndicator @JvmOverloads constructor(
 
     init {
         this.icon = IconicsDrawable(context)
-            .icon(CommunityMaterial.Icon.cmd_soccer)
+            .icon(CommunityMaterial.Icon2.cmd_soccer)
             .colorRes(R.color.colorPrimary)
     }
 

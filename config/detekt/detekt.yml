@@ -18,3 +18,5 @@ style:
     values: 'FIXME:,STOPSHIP:'
   MagicNumber:
     active: false
+  OptionalUnit:
+    active: false

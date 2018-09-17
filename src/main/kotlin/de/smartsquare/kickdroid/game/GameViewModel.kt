@@ -29,13 +29,13 @@ class GameViewModel(private val kickprotocol: Kickprotocol, private val userMana
     ViewModel() {
 
     private companion object {
-        private val EMPTY_LOBBY = Lobby("", "", emptyList(), emptyList(), 0, 0)
+        private val emptyLobby = Lobby("", "", emptyList(), emptyList(), 0, 0)
     }
 
     val state = MutableLiveData<GameState>().apply { value = GameState.SEARCHING }
     val isLoading = MutableLiveData<Boolean>().apply { value = false }
     val error = MutableLiveData<Throwable>()
-    val lobby = MutableLiveData<Lobby>().apply { value = EMPTY_LOBBY }
+    val lobby = MutableLiveData<Lobby>().apply { value = emptyLobby }
 
     private val user
         get() = userManager.user ?: throw IllegalStateException("user cannot be null")
@@ -58,7 +58,7 @@ class GameViewModel(private val kickprotocol: Kickprotocol, private val userMana
             }
             .subscribe({
                 state.value = GameState.SEARCHING
-                lobby.value = EMPTY_LOBBY
+                lobby.value = emptyLobby
             }, {
                 error.value = it
             })
@@ -78,7 +78,7 @@ class GameViewModel(private val kickprotocol: Kickprotocol, private val userMana
             .doOnNext { Log.d(LOGGING_TAG, "Disconnected from device: ${it.endpointId}") }
             .subscribe {
                 state.value = GameState.SEARCHING
-                lobby.value = EMPTY_LOBBY
+                lobby.value = emptyLobby
             }
 
         disposables += kickprotocol.messageEvents
