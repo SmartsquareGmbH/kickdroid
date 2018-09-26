@@ -2,44 +2,44 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     ext {
-        gradleVersion = "4.10"
+        gradleVersion = "4.10.2"
 
-        kotlinVersion = "1.2.70"
+        kotlinVersion = "1.2.71"
         playServicesVersion = "15.0.1"
         kickprotocolVersion = "9f2ea9ec31"
 
-        lifecycleVersion = "2.0.0-rc01"
+        lifecycleVersion = "2.0.0"
 
         androidGradlePluginVersion = "3.3.0-alpha10"
         gradleVersionsPluginVersion = "0.20.0"
         junitPluginVersion = "1.2.0.0"
         ktlintGradleVersion = "5.1.0"
         ktlintVersion = "0.28.0"
-        detektVersion = "1.0.0.RC9"
+        detektVersion = "1.0.0.RC9.2"
         jacocoPluginVersion = "0.12.0"
         jacocoVersion = "0.8.2"
 
-        appcompatVersion = "1.0.0-rc02"
-        recyclerviewVersion = "1.0.0-rc02"
-        cardviewVersion = "1.0.0-rc02"
+        appcompatVersion = "1.0.0"
+        recyclerviewVersion = "1.0.0"
+        cardviewVersion = "1.0.0"
         constraintlayoutVersion = "2.0.0-alpha2"
-        materialDesignVersion = "1.0.0-rc02"
+        materialDesignVersion = "1.0.0"
 
         rxJavaVersion = "2.2.2"
         rxKotlinVersion = "2.3.0"
         rxAndroidVersion = "2.1.0"
         rxPermissionVersion = "0.10.2"
-        rxBindingVersion = "2.1.1"
+        rxBindingVersion = "2.2.0"
         autodisposeVersion = "1.0.0-RC2"
         kOptionalVersion = "1.6.0"
 
-        koinVersion = "1.0.0"
+        koinVersion = "1.0.1"
         kotterknifeVersion = "2.0"
 
-        moshiVersion = "1.6.0"
+        moshiVersion = "1.7.0"
         retrofitVersion = "2.4.0"
 
-        iconicsVersion = "3.1.0-rc02"
+        iconicsVersion = "3.1.0"
         materialProgressbarVersion = "1.4.2"
         communityMaterialTypefaceVersion = "2.7.94.1"
 
