@@ -128,8 +128,8 @@ class StatisticsFragment : BaseFragment() {
                 error.visibility = View.GONE
 
                 bindTopThreePlayer(it.getOrNull(0), second, secondName, secondWins, secondGoals)
-                bindTopThreePlayer(it.getOrNull(0), first, firstName, firstWins, firstGoals)
-                bindTopThreePlayer(it.getOrNull(0), third, thirdName, thirdWins, thirdGoals)
+                bindTopThreePlayer(it.getOrNull(1), first, firstName, firstWins, firstGoals)
+                bindTopThreePlayer(it.getOrNull(2), third, thirdName, thirdWins, thirdGoals)
 
                 listAdapter.items = it.drop(3)
             }
