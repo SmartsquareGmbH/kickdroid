@@ -11,16 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gojuno.koptional.Some
 import com.gojuno.koptional.toOptional
-import com.jakewharton.rxbinding2.view.clicks
-import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import de.smartsquare.kickdroid.R
 import de.smartsquare.kickdroid.base.BaseFragment
 import de.smartsquare.kickdroid.base.DefaultErrorHandler
 import de.smartsquare.kickdroid.base.getSimpleQuantityString
 import de.smartsquare.kickdroid.view.LoadingIndicator
 import io.reactivex.Observable
-import kotterknife.bindView
 import org.koin.android.ext.android.inject
 
 /**
@@ -127,8 +123,8 @@ class StatisticsFragment : BaseFragment() {
 
                 error.visibility = View.GONE
 
-                bindTopThreePlayer(it.getOrNull(0), second, secondName, secondWins, secondGoals)
-                bindTopThreePlayer(it.getOrNull(1), first, firstName, firstWins, firstGoals)
+                bindTopThreePlayer(it.getOrNull(0), first, firstName, firstWins, firstGoals)
+                bindTopThreePlayer(it.getOrNull(1), second, secondName, secondWins, secondGoals)
                 bindTopThreePlayer(it.getOrNull(2), third, thirdName, thirdWins, thirdGoals)
 
                 listAdapter.items = it.drop(3)
