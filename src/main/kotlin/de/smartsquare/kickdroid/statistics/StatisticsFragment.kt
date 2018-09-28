@@ -11,12 +11,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gojuno.koptional.Some
 import com.gojuno.koptional.toOptional
+import com.jakewharton.rxbinding2.view.clicks
+import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
+import de.smartsquare.kickdroid.R
 import de.smartsquare.kickdroid.base.BaseFragment
 import de.smartsquare.kickdroid.base.DefaultErrorHandler
 import de.smartsquare.kickdroid.base.getSimpleQuantityString
 import de.smartsquare.kickdroid.view.LoadingIndicator
 import io.reactivex.Observable
+import kotterknife.bindView
 import org.koin.android.ext.android.inject
 
 /**
@@ -165,8 +169,10 @@ class StatisticsFragment : BaseFragment() {
         } else {
             container.visibility = View.VISIBLE
             nameView.text = player.name
-            winsView.text = resources.getSimpleQuantityString(R.plurals.statistics_wins, player.totalWins)
-            goalsView.text = resources.getSimpleQuantityString(R.plurals.statistics_goals, player.totalGoals)
+            winsView.text =
+                resources.getSimpleQuantityString(R.plurals.statistics_wins, player.totalWins)
+            goalsView.text =
+                resources.getSimpleQuantityString(R.plurals.statistics_goals, player.totalGoals)
         }
     }
 }

@@ -47,7 +47,7 @@ buildscript {
 
         junitVersion = "5.3.1"
         kluentVersion = "1.41"
-        mockkVersion = "1.8.7"
+        mockkVersion = "1.8.8"
         archTestingVersion = "1.1.1"
         kotlinJsonAssertVersion = "0.1.0"
 
