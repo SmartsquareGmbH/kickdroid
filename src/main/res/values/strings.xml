@@ -3,7 +3,6 @@
 
     <string name="main_welcome">Willkommen bei Kickdroid!</string>
     <string name="main_welcome_back">Willkommen zurück, %s</string>
-    <string name="main_set_name">Lege deinen Namen fest, indem du hier tippst</string>
     <string name="main_best_players">Beste Spieler</string>
 
     <string name="searching_loading">Suche nach Matches…</string>
@@ -21,9 +20,8 @@
     <string name="playing_vs">vs</string>
     <string name="playing_colon">:</string>
 
-    <string name="user_name_title">Name festlegen</string>
+    <string name="user_set_info">Bitte gib einen Namen an. Der Name kann später nicht mehr geändert werden</string>
     <string name="user_set_action">Festlegen</string>
-    <string name="user_cancel_action">Abbrechen</string>
     <string name="user_name_hint">Name</string>
     <string name="user_error_empty">Bitte gib etwas ein</string>
     <string name="user_error_conflict">Dieser Name ist bereits vergeben</string>
@@ -51,4 +49,8 @@
     <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>
     <string name="error_timeout">Der Server hat nicht rechtzeitig geantwortet. Überprüfe deine Internetverbindung</string>
     <string name="error_io">Ein Fehler bei der Datenübertragung ist aufgetreten. Überprüfe deine Internetverbindung</string>
+    <string name="main_permission_title">Berechtigung benötigt</string>
+    <string name="main_permission_message">Kickdroid benötigt die Standort-Benachrichtigung um andere Spieler in der Nähe zu finden</string>
+    <string name="main_permission_positive">Gewähren</string>
+    <string name="main_permission_negative">Abbrechen</string>
 </resources>

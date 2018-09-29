@@ -29,10 +29,10 @@ import java.io.IOException
  * @author Ruben Gees
  */
 @ExtendWith(InstantTaskExecutorExtension::class, RxJavaExtension::class, KoinExtension::class)
-class UserDialogViewModelTest : KoinTest {
+class UserViewModelTest : KoinTest {
 
     private val api = mockk<KickwayApi>()
-    private val viewModel by inject<UserDialogViewModel>()
+    private val viewModel by inject<UserViewModel>()
     private val userManager by inject<UserManager>()
 
     private val testModules = modules + module {

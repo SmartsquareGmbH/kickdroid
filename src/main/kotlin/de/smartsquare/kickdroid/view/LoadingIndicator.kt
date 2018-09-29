@@ -20,8 +20,8 @@ class LoadingIndicator @JvmOverloads constructor(
 ) : IconicsImageView(context, attrs, defStyleAttr) {
 
     private companion object {
-        private const val ANIMATION_DURATION = 4000L
-        private const val ROTATION = 720f
+        private const val ROTATION_FACTOR = 1.5f
+        private const val ANIMATION_DURATION_FACTOR = 3L
     }
 
     init {
@@ -49,19 +49,32 @@ class LoadingIndicator @JvmOverloads constructor(
     }
 
     private fun animateOrCancel() {
-        if (ViewCompat.isAttachedToWindow(this) && visibility == View.VISIBLE) {
-            ViewCompat.animate(this)
-                .x(Resources.getSystem().displayMetrics.widthPixels.toFloat())
-                .rotationBy(ROTATION)
-                .setDuration(ANIMATION_DURATION)
-                .withEndAction {
-                    x = (-width).toFloat()
+        val parentView = parent as View
 
-                    animateOrCancel()
-                }
-                .start()
+        if (ViewCompat.isAttachedToWindow(this) && visibility == View.VISIBLE) {
+            if (ViewCompat.isLaidOut(parentView)) {
+                doAnimate()
+            } else {
+                parentView.post { animateOrCancel() }
+            }
         } else {
             ViewCompat.animate(this).cancel()
         }
+    }
+
+    private fun doAnimate() {
+        val parentView = parent as View
+        val targetX = parentView.width
+        val targetRotation = targetX / ROTATION_FACTOR
+        val targetDuration = targetX * ANIMATION_DURATION_FACTOR
+
+        this.x = (-width).toFloat()
+
+        ViewCompat.animate(this)
+            .x(Resources.getSystem().displayMetrics.widthPixels.toFloat())
+            .rotationBy(targetRotation)
+            .setDuration(targetDuration)
+            .withEndAction { animateOrCancel() }
+            .start()
     }
 }

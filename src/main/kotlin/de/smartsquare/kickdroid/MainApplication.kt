@@ -1,7 +1,7 @@
 package de.smartsquare.kickdroid
 
-import android.app.Application
 import android.os.Looper
+import androidx.multidex.MultiDexApplication
 import com.kirillr.strictmodehelper.StrictModeCompat
 import com.mikepenz.community_material_typeface_library.CommunityMaterial
 import com.mikepenz.iconics.Iconics
@@ -14,7 +14,7 @@ import org.koin.android.ext.android.startKoin
 /**
  * @author Ruben Gees
  */
-class MainApplication : Application() {
+class MainApplication : MultiDexApplication() {
 
     companion object {
         const val LOGGING_TAG = "kickdroid"

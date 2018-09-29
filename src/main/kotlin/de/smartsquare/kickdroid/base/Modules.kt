@@ -8,7 +8,7 @@ import de.smartsquare.kickdroid.BuildConfig.KICKWAY_URL
 import de.smartsquare.kickdroid.game.GameViewModel
 import de.smartsquare.kickdroid.kickway.KickwayApi
 import de.smartsquare.kickdroid.statistics.StatisticsViewModel
-import de.smartsquare.kickdroid.user.UserDialogViewModel
+import de.smartsquare.kickdroid.user.UserViewModel
 import de.smartsquare.kickdroid.user.UserManager
 import de.smartsquare.kickprotocol.Kickprotocol
 import org.koin.android.ext.koin.androidContext
@@ -40,7 +40,7 @@ private val kickprotocol = module {
 private val user = module {
     single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
     single { UserManager(get()) }
-    viewModel { UserDialogViewModel(get(), get()) }
+    viewModel { UserViewModel(get(), get()) }
 }
 
 private val game = module {

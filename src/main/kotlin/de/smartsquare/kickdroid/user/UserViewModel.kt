@@ -9,7 +9,7 @@ import io.reactivex.disposables.Disposable
 /**
  * @author Ruben Gees
  */
-class UserDialogViewModel(private val userManager: UserManager, private val kickwayApi: KickwayApi) : ViewModel() {
+class UserViewModel(private val userManager: UserManager, private val kickwayApi: KickwayApi) : ViewModel() {
 
     val authorizationSuccess = MutableLiveData<Unit>()
     val authorizationError = MutableLiveData<Throwable>()

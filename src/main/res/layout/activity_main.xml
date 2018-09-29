@@ -37,22 +37,12 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             tools:text="Welcome to Kickdroid!" />
 
-        <TextView
-            android:id="@+id/subhead"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/headline"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            tools:text="Set your name by tapping here." />
-
         <FrameLayout
             android:id="@+id/gameContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/bestPlayersButton"
-            android:layout_below="@+id/subhead"
+            android:layout_below="@+id/headline"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp" />
 

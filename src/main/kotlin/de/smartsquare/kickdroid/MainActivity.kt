@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import com.gojuno.koptional.rxjava2.filterSome
-import com.gojuno.koptional.toOptional
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.callbacks.onCancel
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -24,9 +24,8 @@ import de.smartsquare.kickdroid.game.PlayingFragment
 import de.smartsquare.kickdroid.game.SearchingFragment
 import de.smartsquare.kickdroid.statistics.StatisticsActivity
 import de.smartsquare.kickdroid.user.User
-import de.smartsquare.kickdroid.user.UserDialog
+import de.smartsquare.kickdroid.user.UserFragment
 import de.smartsquare.kickdroid.user.UserManager
-import io.reactivex.Observable
 import kotterknife.bindView
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -40,11 +39,12 @@ class MainActivity : BaseActivity() {
     private val toolbar by bindView<Toolbar>(R.id.toolbar)
 
     private val headline by bindView<TextView>(R.id.headline)
-    private val subhead by bindView<TextView>(R.id.subhead)
     private val bestPlayersButton by bindView<View>(R.id.bestPlayersButton)
 
     private val userManager by inject<UserManager>()
     private val viewModel by viewModel<GameViewModel>()
+
+    private val rxPermissions = RxPermissions(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +53,7 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(toolbar)
         setupUI(userManager.user)
 
-        initKickprotocol()
+        ensurePermission()
         initListeners()
         initViewModel()
     }
@@ -61,44 +61,31 @@ class MainActivity : BaseActivity() {
     private fun setupUI(user: User?) {
         if (user == null) {
             headline.text = getString(R.string.main_welcome)
-            subhead.text = getString(R.string.main_set_name)
-            subhead.visibility = View.VISIBLE
         } else {
             headline.text = getString(R.string.main_welcome_back, user.name)
-            subhead.visibility = View.GONE
         }
     }
 
-    private fun initKickprotocol() {
-        RxPermissions(this)
+    private fun ensurePermission() {
+        rxPermissions
             .requestEachCombined(Manifest.permission.ACCESS_COARSE_LOCATION)
-            .doOnNext {
+            .autoDisposable(this.scope())
+            .subscribe {
                 if (it.shouldShowRequestPermissionRationale) {
-                    // TODO
+                    MaterialDialog(this)
+                        .title(R.string.main_permission_title)
+                        .message(R.string.main_permission_message)
+                        .positiveButton(R.string.main_permission_positive) { _ -> ensurePermission() }
+                        .negativeButton(R.string.main_permission_negative) { _ -> finish() }
+                        .onCancel { _ -> finish() }
+                        .show()
                 } else if (it.granted.not()) {
-                    // TODO
+                    finish()
                 }
             }
-            .filter { it.granted }
-            .flatMap {
-                Observable.merge(
-                    Observable.just(userManager.user.toOptional()),
-                    userManager.userChanges()
-                )
-            }
-            .filterSome()
-            .take(1)
-            .singleOrError()
-            .autoDisposable(this.scope())
-            .subscribe { _ -> viewModel.discover() }
     }
 
     private fun initListeners() {
-        Observable.merge(headline.clicks(), subhead.clicks())
-            .filter { viewModel.state.value in arrayOf(GameState.SEARCHING, GameState.IDLE) }
-            .autoDisposable(this.scope())
-            .subscribe { UserDialog.show(this) }
-
         bestPlayersButton.clicks()
             .autoDisposable(this.scope())
             .subscribe { StatisticsActivity.navigateTo(this) }
@@ -113,6 +100,7 @@ class MainActivity : BaseActivity() {
             if (it == null) throw IllegalStateException("state cannot be null")
 
             val newFragment = when (it) {
+                GameState.USER -> UserFragment.newInstance()
                 GameState.SEARCHING -> SearchingFragment.newInstance()
                 GameState.IDLE -> IdleFragment.newInstance()
                 GameState.MATCHMAKING -> MatchmakingFragment.newInstance()
