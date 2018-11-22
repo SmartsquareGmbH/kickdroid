@@ -7,9 +7,10 @@ import com.squareup.moshi.Moshi
 import de.smartsquare.kickdroid.BuildConfig.KICKWAY_URL
 import de.smartsquare.kickdroid.game.GameViewModel
 import de.smartsquare.kickdroid.kickway.KickwayApi
+import de.smartsquare.kickdroid.statistics.PlayerViewModel
 import de.smartsquare.kickdroid.statistics.StatisticsViewModel
-import de.smartsquare.kickdroid.user.UserViewModel
 import de.smartsquare.kickdroid.user.UserManager
+import de.smartsquare.kickdroid.user.UserViewModel
 import de.smartsquare.kickprotocol.Kickprotocol
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.ext.koin.viewModel
@@ -49,6 +50,7 @@ private val game = module {
 
 private val statistics = module {
     viewModel { StatisticsViewModel(get()) }
+    viewModel { PlayerViewModel(get()) }
 }
 
 val modules = listOf(

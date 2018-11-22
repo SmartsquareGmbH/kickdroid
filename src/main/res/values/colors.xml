@@ -11,4 +11,7 @@
     <color name="gold">#FBC02D</color>
     <color name="silver">#BDBDBD</color>
     <color name="bronze">#BF360C</color>
+
+    <color name="green">#4caf50</color>
+    <color name="red">#f44336</color>
 </resources>

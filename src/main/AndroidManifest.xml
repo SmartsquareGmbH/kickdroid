@@ -28,5 +28,6 @@
         </activity>
 
         <activity android:name=".statistics.StatisticsActivity" />
+        <activity android:name=".statistics.PlayerActivity" />
     </application>
 </manifest>

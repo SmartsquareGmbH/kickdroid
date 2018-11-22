@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gojuno.koptional.Some
+import com.gojuno.koptional.rxjava2.filterSome
 import com.gojuno.koptional.toOptional
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
@@ -73,13 +73,9 @@ class StatisticsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        listAdapter.clickSubject
-            .autoDisposable(this.scope())
-            .subscribe {
-                // TODO
-            }
-
-        viewModel.loadStatistics(type)
+        if (savedInstanceState == null) {
+            viewModel.loadStatistics(type)
+        }
     }
 
     override fun onCreateView(
@@ -108,12 +104,10 @@ class StatisticsFragment : BaseFragment() {
                 third.clicks().map { 2 }
             )
             .map { viewModel.statisticsSuccess.value?.getOrNull(it).toOptional() }
-            .filter { it is Some }
-            .map { (it as Some).value }
+            .filterSome()
+            .mergeWith(listAdapter.clickSubject)
             .autoDisposable(viewLifecycleOwner.scope())
-            .subscribe {
-                // TODO
-            }
+            .subscribe { PlayerActivity.navigateTo(requireActivity(), it.name) }
 
         viewModel.statisticsSuccess.observe(viewLifecycleOwner, Observer {
             if (it != null) {
@@ -157,6 +151,13 @@ class StatisticsFragment : BaseFragment() {
         })
     }
 
+    override fun onDestroyView() {
+        list.layoutManager = null
+        list.adapter = null
+
+        super.onDestroyView()
+    }
+
     private fun bindTopThreePlayer(
         player: Player?,
         container: ViewGroup,
@@ -169,10 +170,8 @@ class StatisticsFragment : BaseFragment() {
         } else {
             container.visibility = View.VISIBLE
             nameView.text = player.name
-            winsView.text =
-                resources.getSimpleQuantityString(R.plurals.statistics_wins, player.totalWins)
-            goalsView.text =
-                resources.getSimpleQuantityString(R.plurals.statistics_goals, player.totalGoals)
+            winsView.text = resources.getSimpleQuantityString(R.plurals.statistics_wins, player.totalWins)
+            goalsView.text = resources.getSimpleQuantityString(R.plurals.statistics_goals, player.totalGoals)
         }
     }
 }

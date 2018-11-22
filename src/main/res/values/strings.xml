@@ -42,6 +42,12 @@
         <item quantity="other">%d Tore</item>
     </plurals>
 
+    <string name="player_wins">Siege</string>
+    <string name="player_losses">Niederlagen</string>
+    <string name="player_win_rate">{cmd-trophy} Siegesrate</string>
+    <string name="player_average_goals">{cmd-soccer} Durchschnittliche Tore</string>
+    <string name="player_crawls">{cmd-walk} Kriecher</string>
+
     <string name="view_error_retry">Erneut versuchen</string>
 
     <string name="error_client">Die App hat fehlerhafte Daten gesendet. Bitte melde das an die Entwickler</string>
@@ -49,6 +55,7 @@
     <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>
     <string name="error_timeout">Der Server hat nicht rechtzeitig geantwortet. Überprüfe deine Internetverbindung</string>
     <string name="error_io">Ein Fehler bei der Datenübertragung ist aufgetreten. Überprüfe deine Internetverbindung</string>
+
     <string name="main_permission_title">Berechtigung benötigt</string>
     <string name="main_permission_message">Kickdroid benötigt die Standort-Benachrichtigung um andere Spieler in der Nähe zu finden</string>
     <string name="main_permission_positive">Gewähren</string>

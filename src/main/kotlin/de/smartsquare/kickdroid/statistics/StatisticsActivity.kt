@@ -3,7 +3,6 @@ package de.smartsquare.kickdroid.statistics
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -36,18 +35,15 @@ class StatisticsActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         viewPager.adapter = StatisticsAdapter(supportFragmentManager)
         tabs.setupWithViewPager(viewPager)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        }
+    override fun onDestroy() {
+        viewPager.adapter = null
 
-        return super.onOptionsItemSelected(item)
+        super.onDestroy()
     }
 
     private inner class StatisticsAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {

@@ -1,5 +1,6 @@
 package de.smartsquare.kickdroid.base
 
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import kotterknife.KotterKnife
 
@@ -12,5 +13,13 @@ abstract class BaseActivity : AppCompatActivity() {
         KotterKnife.reset(this)
 
         super.onDestroy()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }

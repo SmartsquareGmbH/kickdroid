@@ -1,11 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 buildscript {
     ext {
-        gradleVersion = "5.0-rc-4"
+        gradleVersion = "5.0-rc-5"
 
         kotlinVersion = "1.3.10"
-        playServicesVersion = "15.0.1"
+        playServicesVersion = "16.0.0"
         kickprotocolVersion = "9f2ea9ec31"
 
         multidexVersion = '1.0.3'
@@ -13,47 +14,47 @@ buildscript {
 
         androidGradlePluginVersion = "3.4.0-alpha04"
         gradleVersionsPluginVersion = "0.20.0"
-        junitPluginVersion = "1.2.0.0"
-        ktlintGradleVersion = "5.1.0"
-        ktlintVersion = "0.28.0"
-        detektVersion = "1.0.0.RC9.2"
-        jacocoPluginVersion = "0.12.0"
+        junitPluginVersion = "1.3.1.1"
+        ktlintGradleVersion = "6.3.0"
+        ktlintVersion = "0.29.0"
+        detektVersion = "1.0.0-RC11"
+        jacocoPluginVersion = "0.13.0"
         jacocoVersion = "0.8.2"
 
-        appcompatVersion = "1.0.0"
+        appcompatVersion = "1.0.2"
         recyclerviewVersion = "1.0.0"
         cardviewVersion = "1.0.0"
         constraintlayoutVersion = "2.0.0-alpha2"
-        materialDesignVersion = "1.0.0"
+        materialDesignVersion = "1.1.0-alpha01"
 
-        rxJavaVersion = "2.2.2"
+        rxJavaVersion = "2.2.3"
         rxKotlinVersion = "2.3.0"
         rxAndroidVersion = "2.1.0"
         rxPermissionVersion = "0.10.2"
         rxBindingVersion = "2.2.0"
-        autodisposeVersion = "1.0.0-RC2"
+        autodisposeVersion = "1.0.0"
         kOptionalVersion = "1.6.0"
 
-        koinVersion = "1.0.1"
+        koinVersion = "1.0.2"
         kotterknifeVersion = "2.0"
 
-        moshiVersion = "1.7.0"
-        retrofitVersion = "2.4.0"
+        moshiVersion = "1.8.0"
+        retrofitVersion = "2.5.0"
 
         iconicsVersion = "3.1.0"
-        materialProgressbarVersion = "1.4.2"
-        materialDialogsVersion = "2.0.0-beta2"
+        mpAndroidChartVersion = "v3.1.0-alpha"
+        materialDialogsVersion = "2.0.0-rc1"
         communityMaterialTypefaceVersion = "2.7.94.1"
 
         strictModeCompatVersion = "0b97c52b72"
 
         junitVersion = "5.3.1"
-        kluentVersion = "1.41"
-        mockkVersion = "1.8.8"
+        kluentVersion = "1.43"
+        mockkVersion = "1.8.13"
         archTestingVersion = "1.1.1"
         kotlinJsonAssertVersion = "0.1.0"
 
-        leakCanaryVersion = "1.6.1"
+        leakCanaryVersion = "1.6.2"
     }
 
     repositories {
@@ -69,8 +70,8 @@ buildscript {
 
         classpath "com.vanniktech:gradle-android-junit-jacoco-plugin:$jacocoPluginVersion"
         classpath "com.github.ben-manes:gradle-versions-plugin:$gradleVersionsPluginVersion"
-        classpath "gradle.plugin.io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
-        classpath "gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:$ktlintGradleVersion"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
+        classpath "org.jlleitschuh.gradle:ktlint-gradle:$ktlintGradleVersion"
     }
 }
 
@@ -196,8 +197,8 @@ dependencies {
     implementation "com.mikepenz:iconics-core:$iconicsVersion@aar"
     implementation "com.mikepenz:iconics-views:$iconicsVersion@aar"
     implementation "com.mikepenz:community-material-typeface:$communityMaterialTypefaceVersion@aar"
+    implementation "com.github.PhilJay:MPAndroidChart:$mpAndroidChartVersion"
     implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
-    implementation "me.zhanghai.android.materialprogressbar:library:$materialProgressbarVersion"
 
     implementation "com.github.kirich1409:StrictModeCompat:$strictModeCompatVersion"
 
@@ -239,7 +240,9 @@ detekt {
 
 ktlint {
     version = ktlintVersion
-    reporters = ["CHECKSTYLE"]
+    android = true
+
+    reporters = [ReporterType.CHECKSTYLE]
 }
 
 junitJacoco {
