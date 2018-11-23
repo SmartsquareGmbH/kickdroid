@@ -46,13 +46,33 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
+                    android:drawablePadding="8dp"
                     android:text="@string/player_win_rate"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintBottom_toTopOf="@+id/averageGoalsTitle"
-                    app:layout_constraintEnd_toStartOf="@+id/winRate"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:iiv_start_icon="cmd-trophy"
+                    app:iiv_start_size="22dp"
+                    app:layout_constraintBottom_toTopOf="@+id/winRate"
+                    app:layout_constraintEnd_toStartOf="@+id/winLossChart"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/winRate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/averageGoalsTitle"
+                    app:layout_constraintEnd_toStartOf="@+id/winLossChart"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/winRateTitle"
+                    tools:text="55%" />
 
                 <com.mikepenz.iconics.view.IconicsTextView
                     android:id="@+id/averageGoalsTitle"
@@ -63,12 +83,33 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
+                    android:drawablePadding="8dp"
                     android:text="@string/player_average_goals"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintBottom_toTopOf="@+id/crawlsTitle"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:iiv_start_icon="cmd-soccer"
+                    app:iiv_start_size="22dp"
+                    app:layout_constraintBottom_toTopOf="@+id/averageGoals"
+                    app:layout_constraintEnd_toStartOf="@+id/winLossChart"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/winRateTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/winRate" />
+
+                <TextView
+                    android:id="@+id/averageGoals"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/crawlsTitle"
+                    app:layout_constraintEnd_toStartOf="@+id/winLossChart"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/averageGoalsTitle"
+                    tools:text="7" />
 
                 <com.mikepenz.iconics.view.IconicsTextView
                     android:id="@+id/crawlsTitle"
@@ -79,58 +120,32 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:drawablePadding="8dp"
                     android:text="@string/player_crawls"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/crawls"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:iiv_start_icon="cmd-walk"
+                    app:iiv_start_size="22dp"
+                    app:layout_constraintBottom_toTopOf="@+id/crawls"
+                    app:layout_constraintEnd_toStartOf="@+id/winLossChart"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/averageGoalsTitle" />
-
-                <TextView
-                    android:id="@+id/winRate"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/winRateTitle"
-                    app:layout_constraintEnd_toStartOf="@+id/winLossChart"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/averageGoalsTitle"
-                    app:layout_constraintTop_toTopOf="@+id/winRateTitle"
-                    tools:text="55%" />
-
-                <TextView
-                    android:id="@+id/averageGoals"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/averageGoalsTitle"
-                    app:layout_constraintEnd_toStartOf="@+id/winLossChart"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/averageGoalsTitle"
-                    app:layout_constraintTop_toTopOf="@+id/averageGoalsTitle"
-                    tools:text="7" />
+                    app:layout_constraintTop_toBottomOf="@+id/averageGoals" />
 
                 <TextView
                     android:id="@+id/crawls"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="8dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_marginBottom="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/crawlsTitle"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/winLossChart"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/averageGoalsTitle"
-                    app:layout_constraintTop_toTopOf="@+id/crawlsTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/crawlsTitle"
                     tools:text="3" />
 
                 <com.github.mikephil.charting.charts.PieChart

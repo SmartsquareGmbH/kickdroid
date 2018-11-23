@@ -44,9 +44,9 @@
 
     <string name="player_wins">Siege</string>
     <string name="player_losses">Niederlagen</string>
-    <string name="player_win_rate">{cmd-trophy} Siegesrate</string>
-    <string name="player_average_goals">{cmd-soccer} Durchschnittliche Tore</string>
-    <string name="player_crawls">{cmd-walk} Kriecher</string>
+    <string name="player_win_rate">Siegesrate</string>
+    <string name="player_average_goals">Durchschnittliche Tore</string>
+    <string name="player_crawls">Kriecher</string>
 
     <string name="view_error_retry">Erneut versuchen</string>
 

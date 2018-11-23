@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class PlayerStatistic(
-    val averageGoalsPerGame: Int,
+    val averageGoalsPerGame: Double,
     val winRate: Double,
     val totalCrawls: Int,
     val totalWins: Int,

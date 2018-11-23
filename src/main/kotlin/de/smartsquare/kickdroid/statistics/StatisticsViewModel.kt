@@ -32,7 +32,9 @@ class StatisticsViewModel(private val kickwayApi: KickwayApi) : ViewModel() {
             .doAfterTerminate { statisticsLoading.value = null }
             .subscribe({
                 statisticsSuccess.value = it
+                statisticsError.value = null
             }, {
+                statisticsSuccess.value = null
                 statisticsError.value = it
             })
     }

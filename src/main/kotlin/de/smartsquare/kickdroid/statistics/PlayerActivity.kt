@@ -1,5 +1,6 @@
 package de.smartsquare.kickdroid.statistics
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -23,6 +24,8 @@ import de.smartsquare.kickdroid.base.DefaultErrorHandler
 import de.smartsquare.kickdroid.view.LoadingIndicator
 import kotterknife.bindView
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 /**
  * @author Ruben Gees
@@ -31,6 +34,8 @@ class PlayerActivity : BaseActivity() {
 
     companion object {
         private const val PLAYER_NAME_EXTRA = "player_name"
+
+        private val totalWinsFormat = DecimalFormat("#.#")
 
         fun navigateTo(activity: Activity, playerName: String) {
             activity.startActivity(
@@ -56,7 +61,7 @@ class PlayerActivity : BaseActivity() {
 
     private val winRate by bindView<TextView>(R.id.winRate)
     private val averageGoals by bindView<TextView>(R.id.averageGoals)
-    private val crawls by bindView<TextView>(R.id.averageGoals)
+    private val crawls by bindView<TextView>(R.id.crawls)
     private val winLossChart by bindView<PieChart>(R.id.winLossChart)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,32 +73,19 @@ class PlayerActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = playerName
 
-        winLossChart.holeRadius = 0f
-        winLossChart.description = null
-        winLossChart.transparentCircleRadius = 0f
-        winLossChart.legend.isEnabled = false
-        winLossChart.setUsePercentValues(false)
+        styleWinLossChart()
 
         viewModel.statisticSuccess.observe(this, Observer {
             if (it != null) {
                 content.visibility = View.VISIBLE
                 error.visibility = View.GONE
 
-                winRate.text = it.winRate.toString()
-                averageGoals.text = it.averageGoalsPerGame.toString()
+                @SuppressLint("SetTextI18n")
+                winRate.text = it.winRate.times(100).roundToInt().toString() + "%"
+                averageGoals.text = totalWinsFormat.format(it.averageGoalsPerGame)
                 crawls.text = it.totalCrawls.toString()
 
-                val entries = listOf(
-                    PieEntry(it.totalWins.toFloat(), getString(R.string.player_wins)),
-                    PieEntry(it.totalLosses.toFloat(), getString(R.string.player_losses))
-                )
-
-                val dataSet = PieDataSet(entries, null).apply {
-                    setColors(intArrayOf(R.color.green, R.color.red), this@PlayerActivity)
-                    setDrawValues(false)
-                }
-
-                winLossChart.data = PieData(dataSet)
+                winLossChart.data = constructWinLossChartData(it)
                 winLossChart.animateY(resources.getInteger(android.R.integer.config_longAnimTime), Easing.EaseOutQuart)
             }
         })
@@ -124,5 +116,27 @@ class PlayerActivity : BaseActivity() {
         if (savedInstanceState == null) {
             viewModel.loadStatistic(playerName)
         }
+    }
+
+    private fun constructWinLossChartData(it: PlayerStatistic): PieData {
+        val entries = listOf(
+            PieEntry(it.totalWins.toFloat(), getString(R.string.player_wins)),
+            PieEntry(it.totalLosses.toFloat(), getString(R.string.player_losses))
+        )
+
+        val dataSet = PieDataSet(entries, null).apply {
+            setColors(intArrayOf(R.color.green, R.color.red), this@PlayerActivity)
+            setDrawValues(false)
+        }
+
+        return PieData(dataSet)
+    }
+
+    private fun styleWinLossChart() {
+        winLossChart.holeRadius = 0f
+        winLossChart.description = null
+        winLossChart.transparentCircleRadius = 0f
+        winLossChart.legend.isEnabled = false
+        winLossChart.setUsePercentValues(false)
     }
 }

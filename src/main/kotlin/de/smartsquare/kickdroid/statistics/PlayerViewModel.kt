@@ -15,24 +15,26 @@ class PlayerViewModel(private val kickwayApi: KickwayApi) : ViewModel() {
     val statisticError = MutableLiveData<Throwable>()
     val statisticLoading = MutableLiveData<Unit>()
 
-    private var statisticsDisposable: Disposable? = null
+    private var statisticDisposable: Disposable? = null
 
     override fun onCleared() {
-        statisticsDisposable?.dispose()
+        statisticDisposable?.dispose()
 
         super.onCleared()
     }
 
     fun loadStatistic(playerName: String) {
-        statisticsDisposable?.dispose()
+        statisticDisposable?.dispose()
 
-        statisticsDisposable = kickwayApi.playerStatistic(playerName)
+        statisticDisposable = kickwayApi.playerStatistic(playerName)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { statisticLoading.value = Unit }
             .doAfterTerminate { statisticLoading.value = null }
             .subscribe({
                 statisticSuccess.value = it
+                statisticError.value = null
             }, {
+                statisticSuccess.value = null
                 statisticError.value = it
             })
     }

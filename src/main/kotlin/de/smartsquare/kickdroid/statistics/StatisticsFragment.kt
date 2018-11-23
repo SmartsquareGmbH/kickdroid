@@ -21,7 +21,7 @@ import de.smartsquare.kickdroid.base.getSimpleQuantityString
 import de.smartsquare.kickdroid.view.LoadingIndicator
 import io.reactivex.Observable
 import kotterknife.bindView
-import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
  * @author Ruben Gees
@@ -42,7 +42,7 @@ class StatisticsFragment : BaseFragment() {
 
     private val type get() = requireArguments().getSerializable(TYPE_ARGUMENT) as StatisticsType
 
-    private val viewModel by inject<StatisticsViewModel>()
+    private val viewModel by viewModel<StatisticsViewModel>()
     private val listAdapter = PlayerAdapter()
 
     private val content by bindView<ViewGroup>(R.id.content)
@@ -78,11 +78,7 @@ class StatisticsFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_statistics, container, false)
     }
 
