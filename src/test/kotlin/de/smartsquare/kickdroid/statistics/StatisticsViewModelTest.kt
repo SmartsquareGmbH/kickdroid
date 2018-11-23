@@ -69,7 +69,7 @@ class StatisticsViewModelTest : KoinTest {
         }
 
         verify(exactly = 1) { successObserver.onChanged(expectedPlayers) }
-        verify(exactly = 0) { errorObserver.onChanged(any()) }
+        verify(exactly = 1) { errorObserver.onChanged(isNull()) }
     }
 
     @ParameterizedTest(name = "with type {arguments}")
@@ -95,7 +95,7 @@ class StatisticsViewModelTest : KoinTest {
             loadingObserver.onChanged(null)
         }
 
-        verify(exactly = 0) { successObserver.onChanged(any()) }
+        verify(exactly = 1) { successObserver.onChanged(isNull()) }
         verify(exactly = 1) { errorObserver.onChanged(error) }
     }
 }
