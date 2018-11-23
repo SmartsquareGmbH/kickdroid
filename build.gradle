@@ -139,7 +139,7 @@ android {
                 removeUnusedResources true
                 obfuscate true
                 optimizeCode true
-                proguardFiles "config/proguard-rules.pro"
+                proguardFiles "config/proguard/proguard-rules.pro"
             }
 
             buildConfigField "String", "KICKWAY_URL", "\"${getFromSecrets("KICKWAY_URL")}\""
