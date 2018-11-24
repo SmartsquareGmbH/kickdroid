@@ -33,7 +33,9 @@ class UserViewModel(private val userManager: UserManager, private val kickwayApi
             .doOnTerminate { authorizationLoading.value = null }
             .subscribe({
                 authorizationSuccess.value = Unit
+                authorizationError.value = null
             }, {
+                authorizationSuccess.value = null
                 authorizationError.value = it
             })
     }
