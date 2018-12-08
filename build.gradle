@@ -225,7 +225,7 @@ dependencies {
 
 tasks.withType(KotlinCompile).all {
     kotlinOptions {
-        freeCompilerArgs = ["-Xjsr305=strict"]
+        freeCompilerArgs = ["-Xjsr305=strict", "-progressive"]
     }
 }
 
