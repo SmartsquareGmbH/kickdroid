@@ -40,7 +40,7 @@ class IdleFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.isLoading.observe(this, Observer {
-            if (it == null) throw java.lang.IllegalStateException("isLoading cannot be null")
+            if (it == null) throw IllegalStateException("isLoading cannot be null")
 
             createGame.isEnabled = !it
         })
@@ -48,7 +48,7 @@ class IdleFragment : BaseFragment() {
         createGame.clicks()
             .map { userManager.user.toOptional() }
             .filterSome()
-            .autoDisposable(this.scope())
+            .autoDisposable(viewLifecycleOwner.scope())
             .subscribe { viewModel.createGame() }
     }
 }

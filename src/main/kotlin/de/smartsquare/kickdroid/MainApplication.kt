@@ -30,6 +30,8 @@ class MainApplication : MultiDexApplication() {
         if (BuildConfig.DEBUG) {
             val threadPolicy = StrictModeCompat.ThreadPolicy.Builder()
                 .detectAll()
+                .permitDiskReads()
+                .permitDiskWrites()
                 .penaltyLog()
                 .build()
 

@@ -74,7 +74,7 @@ class MatchmakingFragment : Fragment() {
                 joinLeft.clicks().map { JoinLobbyMessage.TeamPosition.LEFT to !lobby.leftTeam.contains(user.name) },
                 joinRight.clicks().map { JoinLobbyMessage.TeamPosition.RIGHT to !lobby.rightTeam.contains(user.name) }
             )
-            .autoDisposable(this.scope())
+            .autoDisposable(viewLifecycleOwner.scope())
             .subscribe { (position, shouldJoin) ->
                 if (shouldJoin) {
                     viewModel.joinTeam(position)
@@ -84,7 +84,7 @@ class MatchmakingFragment : Fragment() {
             }
 
         startMatch.clicks()
-            .autoDisposable(this.scope())
+            .autoDisposable(viewLifecycleOwner.scope())
             .subscribe { viewModel.startGame() }
     }
 

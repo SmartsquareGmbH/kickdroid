@@ -8,9 +8,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.editorActionEvents
 import com.jakewharton.rxbinding2.widget.textChanges
@@ -18,6 +20,7 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import de.smartsquare.kickdroid.R
 import kotterknife.bindView
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.UUID
 
@@ -30,6 +33,10 @@ class UserFragment : Fragment() {
     }
 
     private val viewModel by viewModel<UserViewModel>()
+    private val userManager by inject<UserManager>()
+
+    private val user
+        get() = userManager.user ?: throw IllegalStateException("user is null")
 
     private val nameInputContainer by bindView<TextInputLayout>(R.id.nameInputContainer)
     private val nameInput by bindView<EditText>(R.id.nameInput)
@@ -45,14 +52,14 @@ class UserFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         nameInput.textChanges()
-            .autoDisposable(this.scope())
+            .autoDisposable(viewLifecycleOwner.scope())
             .subscribe { setError(null) }
 
         nameInput.editorActionEvents()
             .filter { it.actionId() == EditorInfo.IME_ACTION_GO }
             .map { Unit }
             .mergeWith(setButton.clicks())
-            .autoDisposable(this.scope())
+            .autoDisposable(viewLifecycleOwner.scope())
             .subscribe { authorize() }
 
         viewModel.authorizationError.observe(this, Observer {
@@ -71,6 +78,16 @@ class UserFragment : Fragment() {
             } else {
                 setButton.visibility = View.VISIBLE
                 loading.visibility = View.GONE
+            }
+        })
+
+        viewModel.authorizationSuccess.observe(this, Observer {
+            if (it != null) {
+                FirebaseAnalytics.getInstance(requireActivity()).logEvent(
+                    FirebaseAnalytics.Event.LOGIN, bundleOf(
+                        "name" to user.name
+                    )
+                )
             }
         })
     }
