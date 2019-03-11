@@ -1,5 +1,4 @@
-# Keep info required to make stacktraces readable.
--keepattributes *Annotation*
+# Keep line numbers to make stacktraces readable.
 -keepattributes SourceFile,LineNumberTable
 
 # Iconics

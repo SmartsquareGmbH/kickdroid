@@ -106,6 +106,3 @@ Temporary Items
 ### Custom ###
 # Properties file
 secrets.properties
-
-# Firebase config
-google-services.json

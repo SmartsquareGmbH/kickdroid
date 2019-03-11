@@ -11,9 +11,7 @@ import de.smartsquare.kickdroid.statistics.PlayerViewModel
 import de.smartsquare.kickdroid.statistics.StatisticsViewModel
 import de.smartsquare.kickdroid.user.UserManager
 import de.smartsquare.kickdroid.user.UserViewModel
-import de.smartsquare.kickdroid.util.TaggedSocketFactory
 import de.smartsquare.kickprotocol.Kickprotocol
-import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
@@ -23,17 +21,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 private val network = module {
     single { Moshi.Builder().build() }
-    single {
-        OkHttpClient.Builder()
-            .socketFactory(TaggedSocketFactory())
-            .build()
-    }
 
     single {
         Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
             .addConverterFactory(MoshiConverterFactory.create(get()))
-            .client(get())
             .baseUrl(KICKWAY_URL)
             .build()
     }

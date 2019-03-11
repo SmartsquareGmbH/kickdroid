@@ -6,13 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onCancel
-import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.jakewharton.rxbinding2.view.clicks
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.uber.autodispose.android.lifecycle.scope
@@ -29,7 +26,6 @@ import de.smartsquare.kickdroid.statistics.StatisticsActivity
 import de.smartsquare.kickdroid.user.User
 import de.smartsquare.kickdroid.user.UserFragment
 import de.smartsquare.kickdroid.user.UserManager
-import de.smartsquare.kickprotocol.Lobby
 import kotterknife.bindView
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -49,9 +45,6 @@ class MainActivity : BaseActivity() {
     private val viewModel by viewModel<GameViewModel>()
 
     private val rxPermissions = RxPermissions(this)
-
-    private val user
-        get() = userManager.user ?: throw IllegalStateException("user is null")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,37 +112,8 @@ class MainActivity : BaseActivity() {
                 .commitNow()
         })
 
-        viewModel.lobby.observe(this, Observer { logLobby(it) })
-
-        viewModel.error.observe(this, Observer {
-            if (it != null) {
-                Crashlytics.getInstance().core.logException(it)
-            }
-        })
-
         viewModel.error.observe(this, Observer {
             Snackbar.make(root, DefaultErrorHandler.handle(it), Snackbar.LENGTH_LONG).show()
         })
-    }
-
-    private fun logLobby(lobby: Lobby) {
-        if (lobby.rightTeam.contains(user.name) || lobby.leftTeam.contains(user.name)) {
-            if (lobby.scoreLeftTeam <= 0 && lobby.scoreRightTeam <= 0) {
-                FirebaseAnalytics.getInstance(this).logEvent(
-                    "joined_lobby", bundleOf(
-                        "name" to lobby.name,
-                        "players" to "Left: ${lobby.leftTeam}\nRight: ${lobby.rightTeam}"
-                    )
-                )
-            } else {
-                FirebaseAnalytics.getInstance(this).logEvent(
-                    "lobby_update", bundleOf(
-                        "name" to lobby.name,
-                        "score" to "${lobby.scoreLeftTeam}:${lobby.scoreRightTeam}",
-                        "players" to "Left: ${lobby.leftTeam}\nRight: ${lobby.rightTeam}"
-                    )
-                )
-            }
-        }
     }
 }
